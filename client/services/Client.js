@@ -25,7 +25,7 @@ class Client {
     });
 
     this.socket.on('playermove', data => {
-      game.gameObjectHandler.movePlayer(data.id, data.x, data.y);
+      game.gameObjectHandler.movePlayer(data.id, data.x, data.y, data.angle);
     });
 
     this.socket.on('remove', id => {
@@ -37,8 +37,8 @@ class Client {
     this.socket.emit('newplayer');
   }
 
-  sendMove(x, y) {
-    this.socket.emit('playermove', { x, y });
+  sendMove(x, y, angle) {
+    this.socket.emit('playermove', { x, y, angle });
   }
 }
 

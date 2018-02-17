@@ -6,6 +6,7 @@ class MoveEvent {
       if(moved) {
         socket.player.x = data.x;
         socket.player.y = data.y;
+        socket.player.angle = data.angle;
         socket.broadcast.emit('playermove', socket.player)
       }
     });

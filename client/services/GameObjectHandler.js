@@ -12,6 +12,7 @@ class GameObjectHandler {
   }
 
   getPlayer(id) {
+    if(!this.players) return null;
     return _.find(this.players.hash, {id: id});
   }
   
@@ -20,12 +21,13 @@ class GameObjectHandler {
     let player = Object.assign(sprite, {id: id});
     this.game.physics.arcade.enable(player);
     player.body.collideWorldBounds = true;
+    player.anchor.setTo(0.5, 0.5);
 
     this.players.add(player);
     if(id===this.game.myID) this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
   }
 
-  movePlayer(id, x, y) {
+  movePlayer(id, x, y, angle) {
     let player = this.getPlayer(id);
     if(!player) return;
 
@@ -35,6 +37,8 @@ class GameObjectHandler {
 
     tween.to({ x, y }, duration);
     tween.start();
+
+    player.angle = angle;
   }
 
   removePlayer(id) {

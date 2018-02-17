@@ -32,7 +32,7 @@ class GameObjectHandler {
     if(!player) return;
 
     let distance = Phaser.Math.distance(player.x, player.y, x, y);
-    let duration = this.game.moveSpeed/2;
+    let duration = this.game.moveSpeed;
     let tween = this.game.add.tween(player);
 
     tween.to({ x, y }, duration);

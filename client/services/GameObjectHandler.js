@@ -35,6 +35,9 @@ class GameObjectHandler {
     let duration = this.game.moveSpeed;
     let tween = this.game.add.tween(player);
 
+    this.game.foam.x = x;
+    this.game.foam.y = y;    
+
     tween.to({ x, y }, duration);
     tween.start();
 

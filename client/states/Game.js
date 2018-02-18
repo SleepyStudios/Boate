@@ -12,20 +12,22 @@ class Game extends Phaser.State {
 
   preload() {
     this.stage.disableVisibilityChange = true;
-    this.load.tilemap('map', 'assets/map/map.json', null, Phaser.Tilemap.TILED_JSON);
-    this.load.spritesheet('tileset', 'assets/map/mspaintblue.png', 96, 96);
+    // this.load.tilemap('map', 'assets/map/map.json', null, Phaser.Tilemap.TILED_JSON);
+    // this.load.spritesheet('tileset', 'assets/map/mspaintblue.png', 96, 96);
     this.load.image('sprite', 'assets/sprites/boat1.png');
-    this.load.image('wake', 'assets/particles/white.png');
+    this.load.image('sea', 'assets/sprites/mspaintblue.png');
   }
 
   create() {
-    let map = this.add.tilemap('map');    
-    map.addTilesetImage('mspaintblue', 'tileset');    
+    // let map = this.add.tilemap('map');    
+    // map.addTilesetImage('mspaintblue', 'tileset');    
 
-    let layer = null;
-    for(let i=0; i<map.layers.length; i++) layer = map.createLayer(i);
+    // let layer = null;
+    // for(let i=0; i<map.layers.length; i++) layer = map.createLayer(i);
 
-    this.world.setBounds(0, 0, 100000, 100000);     
+    let worldSize = 4096;
+    this.add.tileSprite(0, 0, worldSize, worldSize, 'sea');
+    this.world.setBounds(0, 0, worldSize, worldSize);     
 
     this.gameObjectHandler.create();
     this.client.requestJoin();
@@ -53,7 +55,7 @@ class Game extends Phaser.State {
       player.body.angularVelocity = this.moveSpeed;  
     }   
 
-    this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed, player.body.velocity);       
+    this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed*1.5, player.body.velocity);       
     this.client.sendMove(player.x, player.y, player.angle); 
   }
 }

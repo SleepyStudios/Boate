@@ -7,7 +7,7 @@ class Client {
     this.socket.on('disconnect', () => {
       setTimeout(() => {
         location.reload();        
-      }, 4000);
+      }, 2000);
     });
 
     this.socket.on('myid', data => {

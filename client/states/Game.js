@@ -14,7 +14,7 @@ class Game extends Phaser.State {
     this.stage.disableVisibilityChange = true;
     this.load.tilemap('map', 'assets/map/map.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.spritesheet('tileset', 'assets/map/mspaintblue.png', 96, 96);
-    this.load.image('sprite', 'assets/sprites/sprite.png');
+    this.load.image('sprite', 'assets/sprites/boat1.png');
     this.load.image('wake', 'assets/particles/white.png');
   }
 

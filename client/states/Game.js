@@ -1,5 +1,6 @@
 import Client from '../services/Client'
 import GameObjectHandler from '../services/GameObjectHandler'
+import _ from 'lodash'
 
 class Game extends Phaser.State {
   constructor() {
@@ -23,39 +24,38 @@ class Game extends Phaser.State {
     let worldSize = 4096;
     this.add.tileSprite(0, 0, worldSize, worldSize, 'sea');
     this.world.setBounds(0, 0, worldSize, worldSize);  
-    
-    this.foam = this.add.emitter(0, 0, 200);
-    this.foam.makeParticles('foam');
-    this.foam.gravity = 0;
-    this.foam.setXSpeed(0);      
-    this.foam.start(false, 2000, 60);
-
-    this.weapon = this.add.weapon(20, 'cannonball');
-    this.weapon.bulletSpeed = 200;
-    this.weapon.fireRate = 1000;
-    this.weapon.bulletRotateToVelocity = true;
-    // this.weapon.onFire = this.onFire;
 
     this.gameObjectHandler.create();
     this.client.requestJoin();
   }
 
   update() {
-    let player = this.gameObjectHandler.getPlayer(this.myID);   
-    if(!player) return;    
+    // foam fadeout
+    this.gameObjectHandler.players.children.forEach(player => {
+      let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);
+      emitter.forEachAlive(p => {
+        p.alpha = p.lifespan / emitter.lifespan;	
+      });
+    });
+
+    let player = this.getMe();   
+    if(!player) return;   
 
     // this.physics.arcade.collide(player, this.gameObjectHandler.players, this.gameObjectHandler.handleCollision, null, this);
 
-    // foam fadeout
-    this.foam.forEachAlive(p => {
-      p.alpha = p.lifespan / this.foam.lifespan;	
-    });
-
+    // input
     this.handleInput(player);
 
     // foam position
-    this.foam.x = player.x;
-    this.foam.y = player.y;
+    this.gameObjectHandler.anchorFoamEmitter(player, player.x, player.y);
+  }
+
+  render() {
+
+  }
+
+  getMe() {
+    return _.find(this.gameObjectHandler.players.hash, {id: this.myID});    
   }
 
   handleInput(player) {
@@ -71,22 +71,22 @@ class Game extends Phaser.State {
       player.body.angularVelocity = this.moveSpeed;  
     }
     
-    if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {
-      this.weapon.fireAngle = player.angle-180;      
-      this.weapon.fire();
+    if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {    
+      this.fire(player, player.angle-180);             
     }
 
     if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
-      this.weapon.fireAngle = player.angle+360;      
-      this.weapon.fire();
+      this.fire(player, player.angle+360);     
     }
 
     this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed, player.body.velocity);       
     this.client.sendMove(player.x, player.y, player.angle); 
   }
 
-  render() {
-    this.weapon.debug();
+  fire(player, angle) {
+    this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id).fireAngle = angle;     
+    this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id).fire();
+    if(player.id===this.myID) this.client.sendFire();
   }
 }
 

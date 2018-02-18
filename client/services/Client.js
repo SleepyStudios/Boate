@@ -40,6 +40,10 @@ class Client {
   sendMove(x, y, angle) {
     this.socket.emit('playermove', { x, y, angle });
   }
+
+  sendFire() {
+    
+  }
 }
 
 export default Client

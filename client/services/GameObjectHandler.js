@@ -5,15 +5,18 @@ class GameObjectHandler {
   constructor(game) {
     this.game = game;
     this.players;
+    this.foamEmitters;
+    this.weapons = [];
   }
 
   create() {
     this.players = this.game.add.group();
+    this.foamEmitters = this.game.add.group();
   }
 
   getPlayer(id) {
     if(!this.players) return null;
-    return _.find(this.players.hash, {id: id});
+    return _.find(this.players.children, {id: id});
   }
   
   addPlayer(id, x, y) {
@@ -23,13 +26,44 @@ class GameObjectHandler {
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
 
+    this.addFoamEmitter(player);
+    this.addWeapon(player);  
+
     this.players.add(player);
+    this.game.world.bringToTop(this.players);  
 
     // if it's them
     if(id===this.game.myID) {
       this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
-      this.game.weapon.trackSprite(player);
     }
+  }
+
+  getPlayerChild(group, id) {
+    return _.find(group, {playerID: id});
+  }
+
+  addFoamEmitter(player) {
+    let foam = this.game.add.emitter(0, 0, 200);
+    foam.makeParticles('foam');
+    foam.gravity = 0;
+    foam.setXSpeed(0);      
+    foam.start(false, 2000, 60);
+    foam.playerID = player.id;
+    this.foamEmitters.add(foam);
+  }
+
+  anchorFoamEmitter(player, x, y) {
+    this.getPlayerChild(this.foamEmitters.children, player.id).x = x;
+    this.getPlayerChild(this.foamEmitters.children, player.id).y = y;    
+  }
+
+  addWeapon(player) {
+    let weapon = this.game.add.weapon(-1, 'cannonball');
+    weapon.bulletSpeed = 300;
+    weapon.fireRate = 1000;
+    weapon.trackSprite(player);   
+    weapon.playerID = player.id;
+    this.weapons.push(weapon);
   }
 
   movePlayer(id, x, y, angle) {
@@ -40,8 +74,8 @@ class GameObjectHandler {
     let duration = this.game.moveSpeed;
     let tween = this.game.add.tween(player);
 
-    this.game.foam.x = x;
-    this.game.foam.y = y;    
+    // update foam position
+    this.anchorFoamEmitter(player, x, y);     
 
     tween.to({ x, y }, duration);
     tween.start();
@@ -54,6 +88,10 @@ class GameObjectHandler {
 
     this.getPlayer(id).destroy();
     delete this.getPlayer(id);
+
+    // destroy their foam emitter
+    this.getPlayerChild(this.foamEmitters.children, id).destroy();
+    delete this.getPlayerChild(this.foamEmitters.children, id);
   }
 
   handleCollision(player1, player2) {

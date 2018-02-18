@@ -60,7 +60,7 @@ class GameObjectHandler {
   addWeapon(player) {
     let weapon = this.game.add.weapon(-1, 'cannonball');
     weapon.bulletSpeed = 300;
-    weapon.fireRate = 1000;
+    weapon.fireRate = 500;
     weapon.trackSprite(player);   
     weapon.playerID = player.id;
     this.weapons.push(weapon);
@@ -94,7 +94,9 @@ class GameObjectHandler {
     delete this.getPlayerChild(this.foamEmitters.children, id);
   }
 
-  handleCollision(player1, player2) {
+  hitPlayer(bullet, player) {
+    if(player.id===this.game.myID) return;
+    bullet.kill();
     this.game.camera.flash(0xffffff, 500);
   }
 }

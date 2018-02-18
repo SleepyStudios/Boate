@@ -41,7 +41,8 @@ class Game extends Phaser.State {
     let player = this.getMe();   
     if(!player) return;   
 
-    // this.physics.arcade.collide(player, this.gameObjectHandler.players, this.gameObjectHandler.handleCollision, null, this);
+    let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
+    this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.hitPlayer, null, this);
 
     // input
     this.handleInput(player);
@@ -50,9 +51,7 @@ class Game extends Phaser.State {
     this.gameObjectHandler.anchorFoamEmitter(player, player.x, player.y);
   }
 
-  render() {
-
-  }
+  render() {}
 
   getMe() {
     return _.find(this.gameObjectHandler.players.hash, {id: this.myID});    

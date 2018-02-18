@@ -31,6 +31,10 @@ class Client {
     this.socket.on('remove', id => {
       game.gameObjectHandler.removePlayer(id);
     });
+
+    this.socket.on('playerfire', data => {
+      game.fire(game.gameObjectHandler.getPlayer(data.id), data.angle);
+    });
   }
 
   requestJoin() {
@@ -41,8 +45,8 @@ class Client {
     this.socket.emit('playermove', { x, y, angle });
   }
 
-  sendFire() {
-    
+  sendFire(angle) {
+    this.socket.emit('playerfire', { angle });
   }
 }
 

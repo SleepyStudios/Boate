@@ -84,9 +84,10 @@ class Game extends Phaser.State {
   }
 
   fire(player, angle) {
-    this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id).fireAngle = angle;     
-    this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id).fire();
-    if(player.id===this.myID) this.client.sendFire();
+    let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
+    weapon.fireAngle = angle;     
+    weapon.fire();
+    if(player.id===this.myID) this.client.sendFire(angle);
   }
 }
 

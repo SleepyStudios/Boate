@@ -24,7 +24,12 @@ class GameObjectHandler {
     player.anchor.setTo(0.5, 0.5);
 
     this.players.add(player);
-    if(id===this.game.myID) this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
+
+    // if it's them
+    if(id===this.game.myID) {
+      this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
+      this.game.weapon.trackSprite(player);
+    }
   }
 
   movePlayer(id, x, y, angle) {

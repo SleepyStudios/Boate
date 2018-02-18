@@ -4,6 +4,7 @@ import GameObjectHandler from '../services/GameObjectHandler'
 class Game extends Phaser.State {
   constructor() {
     super();
+
     this.client = new Client(this);
     this.myID = -1;
     this.moveSpeed = 30;
@@ -14,7 +15,8 @@ class Game extends Phaser.State {
     this.stage.disableVisibilityChange = true;
     this.load.image('sprite', 'assets/sprites/boat1.png');
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
-    this.load.image('foam', 'assets/particles/foam.png');    
+    this.load.image('foam', 'assets/particles/foam.png'); 
+    this.load.image('cannonball', 'assets/sprites/cannonball.png');           
   }
 
   create() {
@@ -27,6 +29,12 @@ class Game extends Phaser.State {
     this.foam.gravity = 0;
     this.foam.setXSpeed(0);      
     this.foam.start(false, 2000, 60);
+
+    this.weapon = this.add.weapon(20, 'cannonball');
+    this.weapon.bulletSpeed = 200;
+    this.weapon.fireRate = 1000;
+    this.weapon.bulletRotateToVelocity = true;
+    // this.weapon.onFire = this.onFire;
 
     this.gameObjectHandler.create();
     this.client.requestJoin();
@@ -61,10 +69,24 @@ class Game extends Phaser.State {
   
     if(this.input.keyboard.isDown(Phaser.KeyCode.D)) { 
       player.body.angularVelocity = this.moveSpeed;  
-    }   
+    }
+    
+    if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {
+      this.weapon.fireAngle = player.angle-180;      
+      this.weapon.fire();
+    }
+
+    if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
+      this.weapon.fireAngle = player.angle+360;      
+      this.weapon.fire();
+    }
 
     this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed, player.body.velocity);       
     this.client.sendMove(player.x, player.y, player.angle); 
+  }
+
+  render() {
+    this.weapon.debug();
   }
 }
 

@@ -22,6 +22,7 @@ class Game extends Phaser.State {
     this.stage.disableVisibilityChange = true;
     this.load.image('sprite', 'assets/sprites/boat1.png');
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
+    this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.image('foam', 'assets/particles/foam.png'); 
     this.load.image('cannonball', 'assets/sprites/cannonball.png');           
   }
@@ -30,8 +31,18 @@ class Game extends Phaser.State {
     let worldSize = 4096;
     let bound = 10;
     this.add.tileSprite(bound, bound, worldSize-bound*2, worldSize-bound*2, 'sea');
-    this.world.setBounds(0, 0, worldSize, worldSize);  
-
+    this.world.setBounds(0, 0, worldSize, worldSize);
+    
+    // randomly positioned waves
+    let waves = this.add.group();
+    for(var i = 0; i < 100; i++) {
+      var randX = Math.floor(Math.random() * worldSize);
+      var randY = Math.floor(Math.random() * worldSize);
+      waves.create(randX, randY, 'waves');
+    }
+    waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
+    waves.callAll('play', null, 'waves');
+    
     this.gameObjectHandler.create();
     this.client.requestJoin();
   }

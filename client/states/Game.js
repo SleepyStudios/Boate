@@ -26,10 +26,12 @@ class Game extends Phaser.State {
     this.stage.disableVisibilityChange = true;
     this.load.image('sprite', 'assets/sprites/boat1.png');
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
-    this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.image('foam', 'assets/particles/foam.png'); 
     this.load.image('cannonball', 'assets/sprites/cannonball.png');  
-    this.load.image('chest', 'assets/sprites/chest.png');        
+    this.load.image('chest', 'assets/sprites/chest.png');
+    
+    this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
+    this.load.spritesheet('floating chest', 'assets/sprites/floatingchest.png', 100, 100);
     
     this.load.audio('shoot', 'assets/audio/shoot.wav');
     this.load.audio('hit', 'assets/audio/hit.wav');    
@@ -53,6 +55,12 @@ class Game extends Phaser.State {
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
+    
+    // treasure chests
+    let chests = this.add.group();
+    chests.create(200, 200, 'floating chest');
+    chests.callAll('animations.add', 'animations', 'float', [0,1,2,3,4], 7, true);
+    chests.callAll('play', null, 'float');
 
     // sounds
     this.sounds.shoot = this.add.audio('shoot');

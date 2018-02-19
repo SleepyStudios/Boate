@@ -9,12 +9,14 @@ class GameObjectHandler {
     this.weapons = [];
     this.ui = {};
     this.chests;
+    this.islands;
   }
 
   create() {
     this.players = this.game.add.group();
     this.foamEmitters = this.game.add.group();
     this.chests = this.game.add.group();
+    this.islands = this.game.add.group();    
   }
 
   getPlayer(id) {
@@ -28,8 +30,9 @@ class GameObjectHandler {
     this.game.physics.arcade.enable(player);
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
+    player.body.setSize(150, 150, 52/2, 63/2);
 
-    // could porbably be done better with spread operator but im dumb
+    // could probably be done better with spread operator but im dumb
     player.health = data.health;
     player.tint = this.rgbToHex(player.health);
     player.name = data.name;
@@ -183,15 +186,22 @@ class GameObjectHandler {
   }
 
   addChest(data) {
-    let chest = this.game.add.sprite(data.x, data.y, 'floating chest');
+    let chest = this.game.add.sprite(data.x, data.y, data.onIsland ? 'x' : 'floating chest');
     chest.id = data.id;    
     chest.gold = data.gold;
-    this.game.physics.arcade.enable(chest);    
+    this.game.physics.arcade.enable(chest);   
+
+    if(!data.onIsland) {
+      chest.body.setSize(40, 40, 30, 35);     
+    } else {
+      chest.body.setSize(40, 40, 122, 102);     
+    }
 
     chest.animations.add('float', [0, 1, 2, 3, 4], 7, true);
     chest.play('float');
 
-    this.chests.add(chest);    
+    this.chests.add(chest); 
+    this.game.world.bringToTop(this.chests);   
   }
 
   pickupChest(data) {
@@ -208,6 +218,14 @@ class GameObjectHandler {
     });
 
     this.updateLeaderboard();
+  }
+
+  addIsland(data) {
+    let island = this.game.add.sprite(data.x, data.y, 'island');
+    island.id = data.id;    
+    // island.anchor.setTo(0.5, 0.5);    
+    // island.angle = data.angle;
+    this.islands.add(island);
   }
 }
 

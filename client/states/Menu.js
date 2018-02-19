@@ -17,7 +17,7 @@ class Menu extends Phaser.State {
   preload() {
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
     this.add.plugin(PhaserInput.Plugin);  
-    this.load.audio('music', 'assets/audio/music.mp3');    
+    this.load.audio('music', 'assets/audio/citrus.mp3');    
   }
 
   create() {

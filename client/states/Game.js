@@ -83,7 +83,7 @@ class Game extends Phaser.State {
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {
         this.client.sendMove(player.x, player.y, player.angle); 
-      }, 100);
+      }, 50);
     }   
   }
 

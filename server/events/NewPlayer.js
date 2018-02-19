@@ -18,10 +18,16 @@ class NewPlayerEvent {
 
       socket.emit('myid', {id: game.lastPlayerID});
       socket.emit('allplayers', game.getAllPlayers());
+      socket.emit('winddirection', {direction: game.windDirection});
+
+      game.islands.forEach(island => {
+        socket.emit('island', island);
+      });
+
       game.chests.forEach(chest => {
         socket.emit('chest', chest);
       });
-      socket.emit('winddirection', {direction: game.windDirection});      
+
       socket.broadcast.emit('newplayer', socket.player);
 
       new MoveEvent(game, socket);

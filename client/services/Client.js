@@ -51,6 +51,10 @@ class Client {
     this.socket.on('pickupchest', data => {
       game.gameObjectHandler.pickupChest(data);
     });
+
+    this.socket.on('island', data => {
+      game.gameObjectHandler.addIsland(data);
+    });
   }
 
   requestJoin() {

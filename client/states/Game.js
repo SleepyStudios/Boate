@@ -30,6 +30,8 @@ class Game extends Phaser.State {
     this.load.image('smoke', 'assets/particles/smoke.png');      
     this.load.image('cannonball', 'assets/sprites/cannonball.png');  
     this.load.image('chest', 'assets/sprites/chest.png');
+    this.load.image('island', 'assets/sprites/island1.png'); 
+    this.load.image('x', 'assets/sprites/xmarksthespot.png');           
     
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.spritesheet('floating chest', 'assets/sprites/floatingchest.png', 100, 100);
@@ -49,9 +51,9 @@ class Game extends Phaser.State {
     
     // randomly positioned waves
     let waves = this.add.group();
-    for(var i = 0; i < 100; i++) {
-      var randX = Math.floor(Math.random() * worldSize);
-      var randY = Math.floor(Math.random() * worldSize);
+    for(let i = 0; i < 100; i++) {
+      let randX = Math.floor(Math.random() * worldSize);
+      let randY = Math.floor(Math.random() * worldSize);
       waves.create(randX, randY, 'waves');
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
@@ -107,6 +109,13 @@ class Game extends Phaser.State {
   }
 
   render() {
+    // this.gameObjectHandler.chests.forEach(chest => {
+    //   this.game.debug.body(chest);
+    // });
+
+    // this.gameObjectHandler.players.forEach(player => {
+    //   this.game.debug.body(player);
+    // });
   }
 
   getMe() {

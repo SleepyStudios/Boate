@@ -95,6 +95,7 @@ class GameObjectHandler {
     let weapon = this.game.add.weapon(-1, 'cannonball');
     weapon.bulletSpeed = 300;
     weapon.fireRate = 0;
+    weapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
     weapon.trackSprite(player);   
     weapon.onFire.add(this.onFire);
     weapon.playerID = player.id;
@@ -107,7 +108,7 @@ class GameObjectHandler {
 
   addUI() {
     this.ui.windText = this.addText(30, 30, "Wind direction: 0");
-    this.ui.goldText = this.addText(30, 60, "Your Gold: 0");
+    this.ui.goldText = this.addText(30, 60, "Your Gold: 0", null, "#ffcf35");
 
     this.ui.lReload = this.game.add.sprite(30, this.game.game.height-60, 'lcannon');
     this.ui.lReload.fixedToCamera = true;
@@ -118,10 +119,10 @@ class GameObjectHandler {
     this.ui.leaderboard = this.addText(30, 120, "", "left");
   }
 
-  addText(x, y, text, align) {
+  addText(x, y, text, align, colour) {
     let uiText = this.game.add.text(0, 0, text, {
       font: "18px Arial",
-      fill: "#fff",
+      fill: colour ? colour : "#fff",
       align: align ? align : "center"
     });
     uiText.fixedToCamera = true;
@@ -206,7 +207,7 @@ class GameObjectHandler {
 
     this.chests.add(chest); 
     this.game.world.bringToTop(this.chests);
-    this.game.world.bringToTop(this.players);          
+    this.game.world.bringToTop(this.players);         
   }
 
   pickupChest(data) {

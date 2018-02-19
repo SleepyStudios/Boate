@@ -222,7 +222,7 @@ class Game extends Phaser.State {
 
   fire(player, gun) {
     let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
-    if(!weapon) return;
+    if(!weapon || !player) return;
 
     weapon.fireAngle = gun === 'left' ? player.angle-180 : player.angle+360;      
     weapon.fire();
@@ -236,6 +236,8 @@ class Game extends Phaser.State {
 
   onHit(victim, health) {
     let player = this.gameObjectHandler.getPlayer(victim);
+    if(!player) return;
+
     player.health = health;
     player.tint = this.gameObjectHandler.rgbToHex(player.health);  
     this.gameObjectHandler.addSmoke(player, 0, 0);  

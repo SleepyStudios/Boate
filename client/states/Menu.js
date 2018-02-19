@@ -23,7 +23,9 @@ class Menu extends Phaser.State {
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.spritesheet('button', 'assets/sprites/button.png', 80, 50);
     this.add.plugin(PhaserInput.Plugin);  
-    this.load.audio('music', 'assets/audio/citrus.mp3');    
+    this.load.audio('music', 'assets/audio/citrus.mp3');   
+    
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   }
 
   create() {

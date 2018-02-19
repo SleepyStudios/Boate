@@ -7,7 +7,6 @@ class GameObjectHandler {
     this.players;
     this.foamEmitters;
     this.weapons = [];
-
     this.ui = {};
   }
 
@@ -34,15 +33,17 @@ class GameObjectHandler {
     this.addName(player);
     this.addFoamEmitter(player);
     this.addWeapon(player);  
-    this.addUI();
 
     this.players.add(player);
     this.game.world.bringToTop(this.players);  
 
-    // if it's them
+    // if it's the local player
     if(data.id===this.game.myID) {
+      this.addUI();      
       this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
     }
+
+    if(this.ui.leaderboard) this.updateLeaderboard();    
   }
 
   getPlayerChild(group, id) {
@@ -90,18 +91,28 @@ class GameObjectHandler {
     this.ui.lReload = this.addText(30, this.game.game.height-60, "L Reloading");
     this.ui.lReload.visible = false;
     this.ui.rReload = this.addText(this.game.game.width-230, this.game.game.height-60, "R Reloading");
-    this.ui.rReload.visible = false;        
+    this.ui.rReload.visible = false;  
+    
+    this.ui.leaderboard = this.addText(30, 90, "", "left");
   }
 
-  addText(x, y, text) {
+  addText(x, y, text, align) {
     let uiText = this.game.add.text(0, 0, text, {
-      font: "36px Arial",
+      font: "18px Arial",
       fill: "#fff",
-      align: "center"
+      align: align ? align : "center"
     });
     uiText.fixedToCamera = true;
     uiText.cameraOffset = new Phaser.Point(x, y);
     return uiText;
+  }
+
+  updateLeaderboard() {
+    let text = "Leaderboard:";
+    this.players.children.forEach(p => {
+      text += "\n" + p.name;
+    });
+    this.ui.leaderboard.setText(text);
   }
 
   movePlayer(id, x, y, angle) {
@@ -133,6 +144,13 @@ class GameObjectHandler {
     // destroy their foam emitter
     this.getPlayerChild(this.foamEmitters.children, id).destroy();
     delete this.getPlayerChild(this.foamEmitters.children, id);
+
+    // destroy their weapon
+    this.getPlayerChild(this.weapons, id).destroy();
+    delete this.getPlayerChild(this.weapons, id);
+
+    // update the leaderboards
+    if(this.ui.leaderboard) this.updateLeaderboard();        
   }
 
   hitPlayer(bullet, player) {

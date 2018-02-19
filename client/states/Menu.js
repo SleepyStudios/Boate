@@ -5,6 +5,7 @@ class Menu extends Phaser.State {
     this.intro = "BOAT.IO!"
     this.name;
     this.oldName = "";
+    this.music;
   }
 
   init(args) {
@@ -15,10 +16,14 @@ class Menu extends Phaser.State {
 
   preload() {
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
-    this.add.plugin(PhaserInput.Plugin);      
+    this.add.plugin(PhaserInput.Plugin);  
+    this.load.audio('music', 'assets/audio/music.mp3');    
   }
 
   create() {
+    if(!this.music) this.music = this.add.audio('music');
+    this.music.play();
+
     this.world.setBounds(0, 0, this.game.width, this.game.height);
     this.add.tileSprite(0, 0, this.world.width, this.world.height, 'sea');
 

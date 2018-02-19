@@ -80,7 +80,7 @@ class Game extends Phaser.State {
       let smoke = player.getChildAt(1);
       if(smoke) {
         smoke.forEachAlive(p => {
-          if(p.lifespan < emitter.lifespan*0.75) p.alpha = (p.lifespan / emitter.lifespan);
+          if(p.lifespan < emitter.lifespan*0.75) p.alpha = 0.5 + (p.lifespan / emitter.lifespan);
         });
       }
 

@@ -41,8 +41,8 @@ class Game extends Phaser.State {
     this.load.image('rcannon', 'assets/sprites/rightcannon.png'); 
     
     this.load.audio('shoot', 'assets/audio/shoot.wav');
-    this.load.audio('hit', 'assets/audio/hit.wav');    
-    this.load.audio('hurt', 'assets/audio/hurt.wav');
+    this.load.audio('hit', 'assets/audio/hit.wav', 0.3);    
+    this.load.audio('hurt', 'assets/audio/hit.wav', 0.3);
     this.load.audio('coins', 'assets/audio/coins.wav');    
   }
 
@@ -172,7 +172,7 @@ class Game extends Phaser.State {
       }
     } else {
       let tween = this.game.add.tween(player);    
-      tween.to({ angle: Math.ceil((player.angle)/90) * 90 }, 100);
+      tween.to({ angle: Math.ceil((player.angle)/90) * 90 }, 200);
       tween.start();
     }
     
@@ -207,7 +207,7 @@ class Game extends Phaser.State {
     let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.ui.windText.text.split(': ')[1]));
 
     // move
-    if(!player.island) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
+    if(!player.island) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 1.5), player.body.velocity);    
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {
         this.client.sendMove(player.x, player.y, player.angle); 

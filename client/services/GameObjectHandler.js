@@ -8,6 +8,7 @@ class GameObjectHandler {
     this.foamEmitters;
     this.weapons = [];
     this.ui = {};
+    this.uiGroup;
     this.chests;
     this.islands;
     this.explosions;
@@ -16,6 +17,7 @@ class GameObjectHandler {
   create() {
     this.players = this.game.add.group();
     this.foamEmitters = this.game.add.group();
+    this.uiGroup = this.game.add.group();
     this.chests = this.game.add.group();
     this.islands = this.game.add.group();  
     this.explosions = this.game.add.group();  
@@ -95,6 +97,7 @@ class GameObjectHandler {
     let weapon = this.game.add.weapon(-1, 'cannonball');
     weapon.bulletSpeed = 300;
     weapon.fireRate = 0;
+    weapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
     weapon.trackSprite(player);   
     weapon.onFire.add(this.onFire);
     weapon.playerID = player.id;
@@ -107,7 +110,8 @@ class GameObjectHandler {
 
   addUI() {
     this.ui.windText = this.addText(30, 30, "Wind direction: 0");
-    this.ui.goldText = this.addText(30, 60, "Your Gold: 0");
+    this.ui.windText.visible = false;
+    this.ui.goldText = this.addText(30, 30, "Your Gold: 0", null, "#ffcf35");
 
     this.ui.lReload = this.game.add.sprite(30, this.game.game.height-60, 'lcannon');
     this.ui.lReload.fixedToCamera = true;
@@ -115,13 +119,17 @@ class GameObjectHandler {
     this.ui.rReload = this.game.add.sprite(this.game.game.width-30-47, this.game.game.height-60, 'rcannon');
     this.ui.rReload.fixedToCamera = true;
     
-    this.ui.leaderboard = this.addText(30, 120, "", "left");
+    this.ui.leaderboard = this.addText(30, 90, "", "left");
+    
+    Object.values(this.ui).forEach(i => {
+      this.uiGroup.add(i);
+    })
   }
 
-  addText(x, y, text, align) {
+  addText(x, y, text, align, colour) {
     let uiText = this.game.add.text(0, 0, text, {
       font: "18px Arial",
-      fill: "#fff",
+      fill: colour ? colour : "#fff",
       align: align ? align : "center"
     });
     uiText.fixedToCamera = true;
@@ -205,8 +213,13 @@ class GameObjectHandler {
     chest.play('float');
 
     this.chests.add(chest); 
+    this.sortLayers();               
+  }
+
+  sortLayers() {
     this.game.world.bringToTop(this.chests);
-    this.game.world.bringToTop(this.players);          
+    this.game.world.bringToTop(this.players);    
+    this.game.world.bringToTop(this.uiGroup);   
   }
 
   pickupChest(data) {

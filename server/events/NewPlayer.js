@@ -34,7 +34,14 @@ class NewPlayerEvent {
       new DisconnectEvent(game, socket);
       new FireEvent(game, socket);
       new HitEvent(game, socket);
-      new PickupChestEvent(game, socket);      
+      new PickupChestEvent(game, socket);    
+      
+      setTimeout(() => {
+        Object.keys(game.io.sockets.connected).forEach(socketID => {
+          let player = game.io.sockets.connected[socketID].player;
+          if(player && player.id!==socket.player.id) socket.broadcast.emit('playermove', player);
+        });
+      }, 10000)
     });
   }
 }

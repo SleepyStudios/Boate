@@ -111,13 +111,9 @@ class GameObjectHandler {
 
     this.ui.lReload = this.game.add.sprite(30, this.game.game.height-60, 'lcannon');
     this.ui.lReload.fixedToCamera = true;
-    this.ui.lReload.cameraOffset.setTo(this.ui.lReload.x, this.ui.lReload.y);
-    this.ui.lReload.alpha = 0.5;  
     
     this.ui.rReload = this.game.add.sprite(this.game.game.width-30-47, this.game.game.height-60, 'rcannon');
     this.ui.rReload.fixedToCamera = true;
-    this.ui.rReload.cameraOffset.setTo(this.ui.rReload.x, this.ui.rReload.y);
-    this.ui.rReload.alpha = 0.5;  
     
     this.ui.leaderboard = this.addText(30, 120, "", "left");
   }

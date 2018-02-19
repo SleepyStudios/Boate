@@ -201,7 +201,8 @@ class GameObjectHandler {
     chest.play('float');
 
     this.chests.add(chest); 
-    this.game.world.bringToTop(this.chests);   
+    this.game.world.bringToTop(this.chests);
+    this.game.world.bringToTop(this.players);          
   }
 
   pickupChest(data) {

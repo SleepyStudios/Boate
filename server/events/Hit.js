@@ -11,9 +11,8 @@ class HitEvent {
       if(player.health===0) {
         victimSocket.emit('death');
 
-        let chest = {id: game.id(), x: player.x, y: player.y, gold: player.gold};
-        game.chests.push(chest);
-        game.io.sockets.emit('chest', chest);        
+        game.addChest(player.x, player.y, false, player.gold);
+        game.io.sockets.emit('chest', game.chests[game.chests.length-1]);        
       }
     });
   }

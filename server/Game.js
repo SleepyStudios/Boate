@@ -12,7 +12,8 @@ class Game {
       this.io.emit('winddirection', {direction: this.windDirection});
     }, 10000);
 
-    this.chests = [{id: this.id(), x: 100, y: 100, gold: 20}];
+    this.chests = [];
+    this.addChest(100, 100);
 
     this.islands = [];
     this.genIslands();
@@ -42,7 +43,7 @@ class Game {
     let numIslands = Math.floor(worldSize/200);
     let numTreasures = numIslands/4;
     
-    for(let i=0; i<20; i++) {
+    for(let i=0; i<numIslands; i++) {
       let randX = Math.floor(Math.random() * (worldSize-islandSize));
       let randY = Math.floor(Math.random() * (worldSize-islandSize));
 
@@ -56,7 +57,7 @@ class Game {
     }
 
     for(let i=0; i<numTreasures; i++) {
-      this.chests.push({id: this.id(), x: this.islands[i].x, y: this.islands[i].y, gold: this.rand(50, 200), onIsland: true});
+      this.addChest(this.islands[i].x, this.islands[i].y, true);
     }
   }
 
@@ -65,6 +66,11 @@ class Game {
     let b = y - otherIsland.y;
 
     return Math.sqrt(a*a + b*b);
+  }
+
+  addChest(x, y, onIsland, gold) {
+    let chest = {id: this.id(), x, y, onIsland, gold: gold ? gold : this.rand(50, 200)};
+    this.chests.push(chest);
   }
 }
 

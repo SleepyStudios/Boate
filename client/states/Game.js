@@ -35,6 +35,7 @@ class Game extends Phaser.State {
     
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.spritesheet('floating chest', 'assets/sprites/floatingchest.png', 100, 100);
+    this.load.spritesheet('explosion', 'assets/sprites/explosion.png', 100, 100);
     
     this.load.audio('shoot', 'assets/audio/shoot.wav');
     this.load.audio('hit', 'assets/audio/hit.wav');    
@@ -58,6 +59,12 @@ class Game extends Phaser.State {
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
+    
+    // testing explosion
+    let explosions = this.add.group();
+    explosions.create(200, 200, 'explosions');
+    explosions.callAll('animations.add', 'animations', 'explosions', [0,1,2,3,4,5], 20, true);
+    explosions.callAll('play', null, 'explosions');
 
     // sounds
     this.sounds.shoot = this.add.audio('shoot');

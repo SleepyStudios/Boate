@@ -5,12 +5,6 @@ class Client {
     this.socket = io.connect();
     this.name = name;
 
-    // this.socket.on('disconnect', () => {
-    //   setTimeout(() => {
-    //     location.reload();        
-    //   }, 2000);
-    // });
-
     this.socket.on('myid', data => {
       game.myID = data.id;
     });
@@ -39,6 +33,11 @@ class Client {
 
     this.socket.on('playerhit', data => {
       game.onHit(data.victim, data.health);
+    });
+
+    this.socket.on('death', () => {
+      this.socket.disconnect();      
+      game.state.start('Menu', true, false, {intro: "YOU DIED!", name: this.name});
     });
   }
 

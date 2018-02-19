@@ -12,7 +12,6 @@ class CollisionHandler {
     bullet.kill();
     this.resetVelocity(player);
 
-    this.game.camera.flash(0xffffff, 500);
     this.game.client.sendOnHit(player.id);
     this.game.sounds.hit.play();
   }

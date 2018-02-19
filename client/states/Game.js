@@ -242,7 +242,6 @@ class Game extends Phaser.State {
     this.gameObjectHandler.addExplosion(player.x, player.y); 
 
     if(player.id===this.myID) {
-      this.camera.flash(0xff0000, 500);
       this.sounds.hurt.play();      
     }    
   }

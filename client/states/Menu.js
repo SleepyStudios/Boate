@@ -2,7 +2,7 @@ class Menu extends Phaser.State {
   constructor() {
     super();
 
-    this.intro = "BOAT.IO!"
+    this.intro = "BOATE"
     this.name;
     this.oldName = "";
     this.music;
@@ -52,13 +52,13 @@ class Menu extends Phaser.State {
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
     
-    this.button = this.add.button(this.world.centerX+130, this.world.centerY+100, 'button', this.joinGame, this, 1, 0, 2, 0);
+    this.button = this.add.button(this.world.centerX+90, this.world.centerY+83, 'button', this.joinGame, this, 1, 0, 2, 0);
 
     //this.button.onInputOver.add(over, this);
     //this.button.onInputOut.add(out, this);
     //this.button.onInputUp.add(up, this);
 
-    let text = this.add.text(this.world.centerX, this.world.centerY, this.intro + "\nENTER A NAME YE SCURVY DOG\n(press enter twice for now)", {
+    let text = this.add.text(this.world.centerX, this.world.centerY, this.intro + "\nChoose a name!", {
       font: "36px Arial",
       fill: "#fff",
       align: "center"
@@ -66,7 +66,7 @@ class Menu extends Phaser.State {
     text.anchor.setTo(0.5, 0.5);
     text.addColor("#000000", 0); 
 
-    this.name = this.add.inputField(this.world.centerX-100, this.world.centerY+100, {
+    this.name = this.add.inputField(this.world.centerX-(200/2)-(80/2)-10, this.world.centerY+90, {
       font: '18px Arial',
       width: 200,
       height: 18,

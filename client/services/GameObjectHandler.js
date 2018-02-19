@@ -146,8 +146,8 @@ class GameObjectHandler {
     delete this.getPlayerChild(this.foamEmitters.children, id);
 
     // destroy their weapon
-    this.getPlayerChild(this.weapons, id).destroy();
-    delete this.getPlayerChild(this.weapons, id);
+    // this.getPlayerChild(this.weapons, id).destroy();
+    // delete this.getPlayerChild(this.weapons, id);
 
     // update the leaderboards
     if(this.ui.leaderboard) this.updateLeaderboard();        
@@ -157,13 +157,22 @@ class GameObjectHandler {
     if(player.id===this.game.myID) return;
 
     bullet.kill();
+    this.resetVelocity(player);
+
     this.game.camera.flash(0xffffff, 500);
     this.client.sendOnHit(player.id);
   }
 
   handleOtherBullets(bullet, player) {
     if(bullet.playerID===player.id) return;
+    
     bullet.kill();
+    this.resetVelocity(player);
+  }
+
+  resetVelocity(player) {
+    player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
   }
 
   rgbToHex(health) {

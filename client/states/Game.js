@@ -8,7 +8,7 @@ class Game extends Phaser.State {
     super();
 
     this.myID = -1;
-    this.moveSpeed = 30;
+    this.moveSpeed = 50;
     this.gameObjectHandler = new GameObjectHandler(this);
     this.collisionHandler = new CollisionHandler(this);
 
@@ -72,13 +72,13 @@ class Game extends Phaser.State {
       // foam fadeout      
       let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);
       emitter.forEachAlive(p => {
-        p.alpha = p.lifespan / emitter.lifespan;	
+        //p.alpha = p.lifespan / emitter.lifespan;	
       });
 
       let smoke = player.getChildAt(1);
       if(smoke) {
         smoke.forEachAlive(p => {
-          if(p.lifespan < emitter.lifespan*0.75) p.alpha = p.lifespan / emitter.lifespan;	
+          if(p.lifespan < emitter.lifespan*0.75) p.alpha = (p.lifespan / emitter.lifespan);
         });
       }
 
@@ -185,7 +185,7 @@ class Game extends Phaser.State {
 
     setTimeout(() => {
       smoke.x = x;        
-      smoke.start(true, 1500, null, 20);
+      smoke.start(true, 800, null, 20);
     }, delay ? delay : 50);
   }
 

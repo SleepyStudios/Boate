@@ -48,7 +48,7 @@ class Game {
       let randY = Math.floor(Math.random() * (worldSize-islandSize));
 
       while(this.islands.some(i => {
-        return this.getDistance(randX, randY, i)<=islandSize;
+        return this.getDistance(randX, randY, i)<=islandSize*1.5;
       })) {
         randX = Math.floor(Math.random() * (worldSize-islandSize));
         randY = Math.floor(Math.random() * (worldSize-islandSize));

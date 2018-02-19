@@ -14,6 +14,7 @@ class Game extends Phaser.State {
 
     this.tmrShootLeft = 0;
     this.tmrShootRight = 0;
+    this.tmrGetChest = 0;
 
     this.sounds = {};
   }
@@ -29,7 +30,6 @@ class Game extends Phaser.State {
     this.load.image('foam', 'assets/particles/foam.png');
     this.load.image('smoke', 'assets/particles/smoke.png');      
     this.load.image('cannonball', 'assets/sprites/cannonball.png');  
-    this.load.image('chest', 'assets/sprites/chest.png');
     this.load.image('island', 'assets/sprites/island1.png'); 
     this.load.image('x', 'assets/sprites/xmarksthespot.png');           
     
@@ -71,6 +71,10 @@ class Game extends Phaser.State {
     this.sounds.hit = this.add.audio('hit');    
     this.sounds.hurt = this.add.audio('hurt');    
     this.sounds.coins = this.add.audio('coins');
+
+    // progress bar
+    this.progressBack = new Phaser.Rectangle(this.game.width/2-50, this.game.height/2-10, 100, 20);
+    this.progress = new Phaser.Rectangle(this.game.width/2-50, this.game.height/2-10, 100, 20);    
     
     this.gameObjectHandler.create();
     this.client.requestJoin();
@@ -82,6 +86,7 @@ class Game extends Phaser.State {
       let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);
       emitter.forEachAlive(p => {
         //p.alpha = p.lifespan / emitter.lifespan;	
+        if(player.island) p.alpha = 0;
       });
 
       let smoke = player.getChildAt(1);
@@ -106,7 +111,27 @@ class Game extends Phaser.State {
     this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.collisionHandler.hitPlayer, null, this.collisionHandler);
 
     // local player and chests
-    this.physics.arcade.collide(player, this.gameObjectHandler.chests, this.collisionHandler.collideChest, null, this.collisionHandler);    
+    this.physics.arcade.collide(player, this.gameObjectHandler.chests, this.collisionHandler.collideChest, null, this.collisionHandler);
+    
+    // islands
+    // player.island = null;
+    this.physics.arcade.collide(player, this.gameObjectHandler.islands, this.collisionHandler.collideIsland, null, this.collisionHandler); 
+    
+    // docking
+    if(player.island) {
+      let timeToGrab = 3;
+      
+      this.tmrGetChest+=this.time.physicsElapsed;
+      this.progress.width = ((timeToGrab-this.tmrGetChest) / timeToGrab) * this.progressBack.width;      
+
+      if(this.tmrGetChest>=timeToGrab) {
+        this.collisionHandler.collideChest(player, player.tempChest);
+        this.tmrGetChest = 0;
+        player.island = null;
+      }
+    } else {
+      this.tmrGetChest = 0;
+    }
 
     // input
     this.handleInput(player);
@@ -120,9 +145,16 @@ class Game extends Phaser.State {
     //   this.game.debug.body(chest);
     // });
 
-    // this.gameObjectHandler.players.forEach(player => {
-    //   this.game.debug.body(player);
+    // this.gameObjectHandler.islands.forEach(island => {
+      // this.game.debug.body(island);
     // });
+
+    if(this.getMe() && this.getMe().island) {
+      this.game.debug.geom(this.progressBack, '#222');
+      this.game.debug.geom(this.progress, '#44ff44');
+    } else {
+      this.game.debug.reset();
+    }
   }
 
   getMe() {
@@ -134,12 +166,18 @@ class Game extends Phaser.State {
     player.body.velocity.y = 0;
     player.body.angularVelocity = 0;
     
-    if(this.input.keyboard.isDown(Phaser.KeyCode.A)) {
-      player.body.angularVelocity = -this.moveSpeed; 
-    }
-  
-    if(this.input.keyboard.isDown(Phaser.KeyCode.D)) { 
-      player.body.angularVelocity = this.moveSpeed;  
+    if(!player.island) {
+      if(this.input.keyboard.isDown(Phaser.KeyCode.A)) {
+        player.body.angularVelocity = -this.moveSpeed; 
+      }
+    
+      if(this.input.keyboard.isDown(Phaser.KeyCode.D)) { 
+        player.body.angularVelocity = this.moveSpeed;  
+      }
+    } else {
+      let tween = this.game.add.tween(player);    
+      tween.to({ angle: Math.ceil((player.angle)/90) * 90 }, 100);
+      tween.start();
     }
     
     // shooting timers
@@ -173,12 +211,17 @@ class Game extends Phaser.State {
     let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.ui.windText.text.split(': ')[1]));
 
     // move
-    this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
+    if(!player.island) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {
         this.client.sendMove(player.x, player.y, player.angle); 
       }, 50);
-    }   
+    }  
+    
+    // progress bar
+    let y = player.y + 150;
+    this.progressBack.centerOn(player.x, y);    
+    this.progress.centerOn(player.x, y);
   }
 
   fire(player, gun) {

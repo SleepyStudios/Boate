@@ -30,8 +30,24 @@ class CollisionHandler {
   }
 
   collideChest(player, chest) {
+    if(!chest.alive) return;
     this.game.client.sendPickupChest(chest.id);
     chest.kill();
+  }
+
+  collideIsland(player, island) {
+    if(this.hasChest(island)) {
+      player.island = island; 
+      player.tempChest = this.hasChest(island); 
+    } else {
+      player.island = null;
+    }
+  }
+
+  hasChest(island) {
+    return this.game.gameObjectHandler.chests.children.find(chest => {
+      if(chest.x===island.x && chest.y===island.y && chest.alive) return true;
+    });
   }
 }
 

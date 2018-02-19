@@ -226,6 +226,10 @@ class GameObjectHandler {
     island.id = data.id;    
     // island.anchor.setTo(0.5, 0.5);    
     // island.angle = data.angle;
+    this.game.physics.arcade.enable(island);       
+    island.body.immovable = true;
+    island.body.setSize(220, 220, 40, 40);
+
     this.islands.add(island);
   }
 }

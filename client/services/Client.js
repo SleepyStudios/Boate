@@ -42,7 +42,7 @@ class Client {
   }
 
   sendMove(x, y, angle) {
-    this.socket.emit('playermove', { x, y, angle });
+    this.socket.emit('playermove', { x, y, angle, timestamp: Date.now() });
   }
 
   sendFire(angle) {

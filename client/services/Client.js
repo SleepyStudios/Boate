@@ -39,6 +39,10 @@ class Client {
       this.socket.disconnect();      
       game.state.start('Menu', true, false, {intro: "YOU DIED!", name: this.name});
     });
+
+    this.socket.on('winddirection', data => {
+      game.gameObjectHandler.windText.setText("Wind direction: " + data.direction);
+    });
   }
 
   requestJoin() {

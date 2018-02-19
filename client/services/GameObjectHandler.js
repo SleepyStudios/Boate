@@ -7,6 +7,7 @@ class GameObjectHandler {
     this.players;
     this.foamEmitters;
     this.weapons = [];
+    this.windText = null;
   }
 
   create() {
@@ -32,6 +33,7 @@ class GameObjectHandler {
     this.addName(player);
     this.addFoamEmitter(player);
     this.addWeapon(player);  
+    this.addUI();
 
     this.players.add(player);
     this.game.world.bringToTop(this.players);  
@@ -79,6 +81,16 @@ class GameObjectHandler {
 
   onFire(bullet, weapon) {
     bullet.playerID = weapon.playerID;
+  }
+
+  addUI() {
+    this.windText = this.game.add.text(0, 0, "Wind direction: 0", {
+      font: "36px Arial",
+      fill: "#fff",
+      align: "center"
+    });
+    this.windText.fixedToCamera = true;
+    this.windText.cameraOffset = new Phaser.Point(30, 30);
   }
 
   movePlayer(id, x, y, angle) {

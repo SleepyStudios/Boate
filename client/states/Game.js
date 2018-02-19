@@ -82,6 +82,9 @@ class Game extends Phaser.State {
       let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);
       emitter.forEachAlive(p => {
         //p.alpha = p.lifespan / emitter.lifespan;	
+        p.maxParticles = 1000;
+        p.width = 20;
+        p.height = 20;
       });
 
       let smoke = player.getChildAt(1);

@@ -10,13 +10,15 @@ class GameObjectHandler {
     this.ui = {};
     this.chests;
     this.islands;
+    this.explosions;
   }
 
   create() {
     this.players = this.game.add.group();
     this.foamEmitters = this.game.add.group();
     this.chests = this.game.add.group();
-    this.islands = this.game.add.group();    
+    this.islands = this.game.add.group();  
+    this.explosions = this.game.add.group();  
   }
 
   getPlayer(id) {
@@ -71,8 +73,9 @@ class GameObjectHandler {
     let foam = this.game.add.emitter(player.x, player.y, 200);
     foam.makeParticles('foam');
     foam.gravity = 0;
-    foam.setXSpeed(0);      
-    foam.start(false, 2000, 60);
+    foam.setXSpeed(0);  
+    foam.setScale(0.5, 0.5, 0.5, 0.5);    
+    foam.start(false, 2000, 40);
     foam.playerID = player.id;
     this.foamEmitters.add(foam);
   }
@@ -104,12 +107,17 @@ class GameObjectHandler {
 
   addUI() {
     this.ui.windText = this.addText(30, 30, "Wind direction: 0");
-    this.ui.goldText = this.addText(30, 60, "Gold: 0");
+    this.ui.goldText = this.addText(30, 60, "Your Gold: 0");
 
-    this.ui.lReload = this.addText(30, this.game.game.height-60, "L Reloading");
-    this.ui.lReload.visible = false;
-    this.ui.rReload = this.addText(this.game.game.width-230, this.game.game.height-60, "R Reloading");
-    this.ui.rReload.visible = false;  
+    this.ui.lReload = this.game.add.sprite(30, this.game.game.height-60, 'lcannon');
+    this.ui.lReload.fixedToCamera = true;
+    this.ui.lReload.cameraOffset.setTo(this.ui.lReload.x, this.ui.lReload.y);
+    this.ui.lReload.alpha = 0.5;  
+    
+    this.ui.rReload = this.game.add.sprite(this.game.game.width-30-47, this.game.game.height-60, 'rcannon');
+    this.ui.rReload.fixedToCamera = true;
+    this.ui.rReload.cameraOffset.setTo(this.ui.rReload.x, this.ui.rReload.y);
+    this.ui.rReload.alpha = 0.5;  
     
     this.ui.leaderboard = this.addText(30, 120, "", "left");
   }
@@ -126,15 +134,15 @@ class GameObjectHandler {
   }
 
   updateWind(wind) {
-    this.ui.windText.setText("Wind direction: " + wind);
+    if(this.ui.windText) this.ui.windText.setText("Wind direction: " + wind);
   }
 
   updateGold(gold) {
-    this.ui.goldText.setText("Gold: " + gold);
+    if(this.ui.goldText) this.ui.goldText.setText("Your Gold: " + gold + "g");
   }
 
   updateLeaderboard() {
-    let text = "Leaderboard:";
+    let text = "Wanted:";
     _.sortBy(this.players.children, 'gold').reverse().forEach(p => {
       text += "\n" + p.name + ": " + p.gold + "g";
     });
@@ -231,6 +239,23 @@ class GameObjectHandler {
     island.body.setSize(220, 220, 40, 40);
 
     this.islands.add(island);
+  }
+
+  addSmoke(player, x, delay) {
+    let smoke = player.getChildAt(1);
+    if(!smoke) return;
+
+    setTimeout(() => {
+      smoke.x = x;        
+      smoke.start(true, 800, null, 20);
+    }, delay ? delay : 50);
+  }
+
+  addExplosion(x, y) {
+    let exp = this.explosions.create(x-50, y-50, 'explosions');
+    exp.animations.add('explosions', [0,1,2,3,4,5], 15, true);
+    exp.play('explosions', null, false, true);
+    this.game.world.bringToTop(this.explosions);
   }
 }
 

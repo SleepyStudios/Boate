@@ -36,6 +36,9 @@ class Game extends Phaser.State {
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.spritesheet('floating chest', 'assets/sprites/floatingchest.png', 100, 100);
     this.load.spritesheet('explosions', 'assets/sprites/explosion.png', 100, 100);
+
+    this.load.image('lcannon', 'assets/sprites/leftcannon.png');  
+    this.load.image('rcannon', 'assets/sprites/rightcannon.png'); 
     
     this.load.audio('shoot', 'assets/audio/shoot.wav');
     this.load.audio('hit', 'assets/audio/hit.wav');    
@@ -59,12 +62,6 @@ class Game extends Phaser.State {
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
-    
-    // testing explosion
-    let explosions = this.add.group();
-    explosions.create(200, 200, 'explosions');
-    explosions.callAll('animations.add', 'animations', 'explosions', [0,1,2,3,4,5], 15, true);
-    explosions.callAll('play', null, 'explosions');
 
     // sounds
     this.sounds.shoot = this.add.audio('shoot');
@@ -185,24 +182,24 @@ class Game extends Phaser.State {
     this.tmrShootRight+=this.time.physicsElapsed;
     
     if(this.tmrShootLeft>=shootDelay) {
-      this.gameObjectHandler.ui.lReload.visible = false;      
+      this.gameObjectHandler.ui.lReload.alpha = 1;      
       if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {  
-        this.smoke(player, -80);      
+        this.gameObjectHandler.addSmoke(player, -80);      
           
         this.fire(player, 'left');  
         this.tmrShootLeft = 0;       
-        this.gameObjectHandler.ui.lReload.visible = true;                    
+        this.gameObjectHandler.ui.lReload.alpha = 0.5;                    
       }
     }
 
     if(this.tmrShootRight>=shootDelay) {
-      this.gameObjectHandler.ui.rReload.visible = false;
+      this.gameObjectHandler.ui.rReload.alpha = 1;
       if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
-        this.smoke(player, 80);
+        this.gameObjectHandler.addSmoke(player, 80);
         
         this.fire(player, 'right');    
         this.tmrShootRight = 0; 
-        this.gameObjectHandler.ui.rReload.visible = true;     
+        this.gameObjectHandler.ui.rReload.alpha = 0.5;     
       }
     }
 
@@ -233,25 +230,16 @@ class Game extends Phaser.State {
       this.client.sendFire(gun);
       this.sounds.shoot.play();
     } else {
-      this.smoke(player, gun === 'left' ? -80 : 80);
+      this.gameObjectHandler.addSmoke(player, gun === 'left' ? -80 : 80);
     }
-  }
-
-  smoke(player, x, delay) {
-    let smoke = player.getChildAt(1);
-    if(!smoke) return;
-
-    setTimeout(() => {
-      smoke.x = x;        
-      smoke.start(true, 800, null, 20);
-    }, delay ? delay : 50);
   }
 
   onHit(victim, health) {
     let player = this.gameObjectHandler.getPlayer(victim);
     player.health = health;
     player.tint = this.gameObjectHandler.rgbToHex(player.health);  
-    this.smoke(player, 0, 0);   
+    this.gameObjectHandler.addSmoke(player, 0, 0);  
+    this.gameObjectHandler.addExplosion(player.x, player.y); 
 
     if(player.id===this.myID) {
       this.camera.flash(0xff0000, 500);

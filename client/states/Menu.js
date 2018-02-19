@@ -52,7 +52,7 @@ class Menu extends Phaser.State {
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
     
-    this.button = this.add.button(500, 400, 'button', this.joinGame(), this, 1, 0, 2, 0);
+    this.button = this.add.button(this.world.centerX+150, this.world.centerY+105, 'button', this.joinGame, this, 1, 0, 2, 0);
 
     //this.button.onInputOver.add(over, this);
     //this.button.onInputOut.add(out, this);

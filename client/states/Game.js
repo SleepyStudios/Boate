@@ -31,17 +31,24 @@ class Game extends Phaser.State {
   }
 
   update() {
-    // foam fadeout
     this.gameObjectHandler.players.children.forEach(player => {
+      // foam fadeout      
       let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);
       emitter.forEachAlive(p => {
         p.alpha = p.lifespan / emitter.lifespan;	
       });
+
+      // other players' bullets
+      if(player.id!==this.myID) {
+        let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);        
+        this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.handleOtherBullets, null, this);        
+      }
     });
 
     let player = this.getMe();   
     if(!player) return;   
 
+    // local player's bullets
     let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
     this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.hitPlayer, null, this);
 
@@ -52,7 +59,8 @@ class Game extends Phaser.State {
     this.gameObjectHandler.anchorFoamEmitter(player, player.x, player.y);
   }
 
-  render() {}
+  render() {
+  }
 
   getMe() {
     return _.find(this.gameObjectHandler.players.hash, {id: this.myID});    
@@ -92,6 +100,10 @@ class Game extends Phaser.State {
     weapon.fireAngle = angle;     
     weapon.fire();
     if(player.id===this.myID) this.client.sendFire(angle);
+  }
+
+  onHit() {
+    this.camera.flash(0xff0000, 500);    
   }
 }
 

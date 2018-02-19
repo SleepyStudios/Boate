@@ -62,8 +62,13 @@ class GameObjectHandler {
     weapon.bulletSpeed = 300;
     weapon.fireRate = 500;
     weapon.trackSprite(player);   
+    weapon.onFire.add(this.onFire);
     weapon.playerID = player.id;
     this.weapons.push(weapon);
+  }
+
+  onFire(bullet, weapon) {
+    bullet.playerID = weapon.playerID;
   }
 
   movePlayer(id, x, y, angle) {
@@ -77,10 +82,13 @@ class GameObjectHandler {
     // update foam position
     this.anchorFoamEmitter(player, x, y);     
 
-    tween.to({ x, y, angle }, duration);
+    tween.to({ x, y }, duration);
     tween.start();
 
-    player.angle = angle;
+    player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
+    player.body.angularVelocity = 0;
+    player.angle = angle;    
   }
 
   removePlayer(id) {
@@ -96,8 +104,15 @@ class GameObjectHandler {
 
   hitPlayer(bullet, player) {
     if(player.id===this.game.myID) return;
+
     bullet.kill();
     this.game.camera.flash(0xffffff, 500);
+    this.client.sendOnHit(player.id);
+  }
+
+  handleOtherBullets(bullet, player) {
+    if(bullet.playerID===player.id) return;
+    bullet.kill();
   }
 }
 

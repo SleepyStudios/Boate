@@ -35,6 +35,10 @@ class Client {
     this.socket.on('playerfire', data => {
       game.fire(game.gameObjectHandler.getPlayer(data.id), data.angle);
     });
+
+    this.socket.on('playerhit', data => {
+      if(data.victim===game.myID) game.onHit();
+    });
   }
 
   requestJoin() {
@@ -47,6 +51,10 @@ class Client {
 
   sendFire(angle) {
     this.socket.emit('playerfire', { angle });
+  }
+
+  sendOnHit(victim) {
+    this.socket.emit('playerhit', { victim });
   }
 }
 

@@ -1,6 +1,7 @@
 import MoveEvent from './Move'
 import DisconnectEvent from './Disconnect'
 import FireEvent from './Fire'
+import HitEvent from './Hit'
 
 class NewPlayerEvent {
   constructor(game, socket) {
@@ -18,6 +19,7 @@ class NewPlayerEvent {
       new MoveEvent(game, socket);
       new DisconnectEvent(game, socket);
       new FireEvent(game, socket);
+      new HitEvent(game, socket);
     });
   }
 }

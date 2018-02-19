@@ -5,6 +5,8 @@ class PickupChestEvent {
     socket.on('pickupchest', data => {
       let chest = _.find(game.chests, {id: data.id});
       if(chest) {
+        socket.player.gold+=chest.gold;
+
         game.io.emit('pickupchest', {playerID: socket.player.id, chest: chest});
         _.remove(game.chests, {id: data.id});
       }

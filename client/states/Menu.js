@@ -21,7 +21,7 @@ class Menu extends Phaser.State {
   }
 
   create() {
-    if(!this.music) this.music = this.add.audio('music', 0.6, true);
+    if(!this.music) this.music = this.add.audio('music', 0.4, true);
     this.music.play();
 
     this.world.setBounds(0, 0, this.game.width, this.game.height);

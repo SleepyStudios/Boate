@@ -26,7 +26,8 @@ class Game extends Phaser.State {
     this.stage.disableVisibilityChange = true;
     this.load.image('sprite', 'assets/sprites/boat1.png');
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
-    this.load.image('foam', 'assets/particles/foam.png'); 
+    this.load.image('foam', 'assets/particles/foam.png');
+    this.load.image('smoke', 'assets/particles/smoke.png');      
     this.load.image('cannonball', 'assets/sprites/cannonball.png');  
     this.load.image('chest', 'assets/sprites/chest.png');
     
@@ -55,12 +56,6 @@ class Game extends Phaser.State {
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
-    
-    // treasure chests
-    let chests = this.add.group();
-    chests.create(200, 200, 'floating chest');
-    chests.callAll('animations.add', 'animations', 'float', [0,1,2,3,4], 7, true);
-    chests.callAll('play', null, 'float');
 
     // sounds
     this.sounds.shoot = this.add.audio('shoot');
@@ -77,6 +72,11 @@ class Game extends Phaser.State {
       // foam fadeout      
       let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);
       emitter.forEachAlive(p => {
+        p.alpha = p.lifespan / emitter.lifespan;	
+      });
+
+      let smoke = player.getChildAt(1);
+      smoke.forEachAlive(p => {
         p.alpha = p.lifespan / emitter.lifespan;	
       });
 
@@ -131,7 +131,9 @@ class Game extends Phaser.State {
     
     if(this.tmrShootLeft>=shootDelay) {
       this.gameObjectHandler.ui.lReload.visible = false;      
-      if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {    
+      if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {  
+        this.smoke(player, -80);      
+          
         this.fire(player, player.angle-180);  
         this.tmrShootLeft = 0;       
         this.gameObjectHandler.ui.lReload.visible = true;                    
@@ -141,9 +143,11 @@ class Game extends Phaser.State {
     if(this.tmrShootRight>=shootDelay) {
       this.gameObjectHandler.ui.rReload.visible = false;
       if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
+        this.smoke(player, 80);
+        
         this.fire(player, player.angle+360);    
         this.tmrShootRight = 0; 
-        this.gameObjectHandler.ui.rReload.visible = true;        
+        this.gameObjectHandler.ui.rReload.visible = true;     
       }
     }
 
@@ -166,13 +170,23 @@ class Game extends Phaser.State {
     if(player.id===this.myID) {
       this.client.sendFire(angle);
       this.sounds.shoot.play();
+    } else {
+      this.smoke(player, angle===player.angle-180 ? -80 : 80);
     }
+  }
+
+  smoke(player, x, delay) {
+    setTimeout(() => {
+      player.getChildAt(1).x = x;        
+      player.getChildAt(1).start(true, 2000, null, 20);
+    }, delay ? delay : 50);
   }
 
   onHit(victim, health) {
     let player = this.gameObjectHandler.getPlayer(victim);
     player.health = health;
-    player.tint = this.gameObjectHandler.rgbToHex(player.health);     
+    player.tint = this.gameObjectHandler.rgbToHex(player.health);  
+    this.smoke(player, 0, 0);   
 
     if(player.id===this.myID) {
       this.camera.flash(0xff0000, 500);

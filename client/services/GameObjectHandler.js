@@ -37,6 +37,7 @@ class GameObjectHandler {
 
     this.addName(player);
     this.addFoamEmitter(player);
+    this.addSmokeEmitter(player);
     this.addWeapon(player);  
 
     this.players.add(player);
@@ -76,6 +77,12 @@ class GameObjectHandler {
   anchorFoamEmitter(player, x, y) {
     this.getPlayerChild(this.foamEmitters.children, player.id).x = x;
     this.getPlayerChild(this.foamEmitters.children, player.id).y = y;    
+  }
+
+  addSmokeEmitter(player) {
+    let smokeEmitter = this.game.add.emitter(0, 0, 100);
+    smokeEmitter.makeParticles('smoke');
+    player.addChild(smokeEmitter);
   }
 
   addWeapon(player) {
@@ -176,11 +183,15 @@ class GameObjectHandler {
   }
 
   addChest(data) {
-    let chest = this.game.add.sprite(data.x, data.y, 'chest');
+    let chest = this.game.add.sprite(data.x, data.y, 'floating chest');
     chest.id = data.id;    
     chest.gold = data.gold;
     this.game.physics.arcade.enable(chest);    
-    this.chests.add(chest);
+
+    chest.animations.add('float', [0, 1, 2, 3, 4], 7, true);
+    chest.play('float');
+
+    this.chests.add(chest);    
   }
 
   pickupChest(data) {

@@ -43,7 +43,7 @@ class GameObjectHandler {
   }
 
   addFoamEmitter(player) {
-    let foam = this.game.add.emitter(0, 0, 200);
+    let foam = this.game.add.emitter(player.x, player.y, 200);
     foam.makeParticles('foam');
     foam.gravity = 0;
     foam.setXSpeed(0);      
@@ -71,13 +71,13 @@ class GameObjectHandler {
     if(!player) return;
 
     let distance = Phaser.Math.distance(player.x, player.y, x, y);
-    let duration = this.game.moveSpeed;
+    let duration = 100;
     let tween = this.game.add.tween(player);
 
     // update foam position
     this.anchorFoamEmitter(player, x, y);     
 
-    tween.to({ x, y }, duration);
+    tween.to({ x, y, angle }, duration);
     tween.start();
 
     player.angle = angle;

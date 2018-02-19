@@ -22,7 +22,8 @@ class Game extends Phaser.State {
 
   create() {
     let worldSize = 4096;
-    this.add.tileSprite(0, 0, worldSize, worldSize, 'sea');
+    let bound = 10;
+    this.add.tileSprite(bound, bound, worldSize-bound*2, worldSize-bound*2, 'sea');
     this.world.setBounds(0, 0, worldSize, worldSize);  
 
     this.gameObjectHandler.create();
@@ -78,11 +79,11 @@ class Game extends Phaser.State {
       this.fire(player, player.angle+360);     
     }
 
-    this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed, player.body.velocity);    
+    this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed * 2, player.body.velocity);    
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {
         this.client.sendMove(player.x, player.y, player.angle); 
-      }, 20);
+      }, 100);
     }   
   }
 

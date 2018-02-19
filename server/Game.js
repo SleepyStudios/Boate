@@ -12,7 +12,7 @@ class Game {
       this.io.emit('winddirection', {direction: this.windDirection});
     }, 10000);
 
-    this.chests = [{x: 100, y: 100, gold: 20}];
+    this.chests = [{id: this.id(), x: 100, y: 100, gold: 20}];
   }
 
   getAllPlayers() {
@@ -27,6 +27,10 @@ class Game {
 
   rand(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
+  }
+
+  id() {
+    return this.rand(1, 1000000);
   }
 }
 

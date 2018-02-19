@@ -125,8 +125,8 @@ class GameObjectHandler {
 
   updateLeaderboard() {
     let text = "Leaderboard:";
-    this.players.children.forEach(p => {
-      text += "\n" + p.name;
+    _.sortBy(this.players.children, 'gold').reverse().forEach(p => {
+      text += "\n" + p.name + ": " + p.gold + "g";
     });
     this.ui.leaderboard.setText(text);
   }
@@ -177,9 +177,26 @@ class GameObjectHandler {
 
   addChest(data) {
     let chest = this.game.add.sprite(data.x, data.y, 'chest');
+    chest.id = data.id;    
     chest.gold = data.gold;
     this.game.physics.arcade.enable(chest);    
     this.chests.add(chest);
+  }
+
+  pickupChest(data) {
+    let player = this.getPlayer(data.playerID);
+    player.gold+=data.chest.gold;    
+
+    if(data.playerID===this.game.myID) {
+      this.game.gameObjectHandler.updateGold(player.gold);
+      this.game.sounds.coins.play();
+    }
+
+    this.chests.children.forEach(chest => {
+      if(chest.id===data.chest.id) chest.kill();
+    });
+
+    this.updateLeaderboard();
   }
 }
 

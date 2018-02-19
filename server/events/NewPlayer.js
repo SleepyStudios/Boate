@@ -2,6 +2,7 @@ import MoveEvent from './Move'
 import DisconnectEvent from './Disconnect'
 import FireEvent from './Fire'
 import HitEvent from './Hit'
+import PickupChestEvent from './PickupChest'
 
 class NewPlayerEvent {
   constructor(game, socket) {
@@ -18,7 +19,7 @@ class NewPlayerEvent {
       socket.emit('myid', {id: game.lastPlayerID});
       socket.emit('allplayers', game.getAllPlayers());
       game.chests.forEach(chest => {
-        socket.emit('chest', {x: chest.x, y: chest.y, gold: chest.gold});
+        socket.emit('chest', chest);
       });
       socket.emit('winddirection', {direction: game.windDirection});      
       socket.broadcast.emit('newplayer', socket.player);
@@ -27,6 +28,7 @@ class NewPlayerEvent {
       new DisconnectEvent(game, socket);
       new FireEvent(game, socket);
       new HitEvent(game, socket);
+      new PickupChestEvent(game, socket);      
     });
   }
 }

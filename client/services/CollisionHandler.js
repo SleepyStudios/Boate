@@ -30,11 +30,8 @@ class CollisionHandler {
   }
 
   collideChest(player, chest) {
-    player.gold+=chest.gold;
+    this.game.client.sendPickupChest(chest.id);
     chest.kill();
-
-    this.game.gameObjectHandler.updateGold(player.gold);
-    this.game.sounds.coins.play();
   }
 }
 

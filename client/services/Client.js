@@ -46,7 +46,11 @@ class Client {
 
     this.socket.on('chest', data => {
       game.gameObjectHandler.addChest(data);
-    })
+    });
+
+    this.socket.on('pickupchest', data => {
+      game.gameObjectHandler.pickupChest(data);
+    });
   }
 
   requestJoin() {
@@ -63,6 +67,10 @@ class Client {
 
   sendOnHit(victim) {
     this.socket.emit('playerhit', { victim });
+  }
+
+  sendPickupChest(id) {
+    this.socket.emit('pickupchest', { id });
   }
 }
 

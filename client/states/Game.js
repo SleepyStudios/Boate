@@ -76,9 +76,11 @@ class Game extends Phaser.State {
       });
 
       let smoke = player.getChildAt(1);
-      smoke.forEachAlive(p => {
-        p.alpha = p.lifespan / emitter.lifespan;	
-      });
+      if(smoke) {
+        smoke.forEachAlive(p => {
+          if(p.lifespan < emitter.lifespan*0.75) p.alpha = p.lifespan / emitter.lifespan;	
+        });
+      }
 
       // other players' bullets
       if(player.id!==this.myID) {
@@ -134,7 +136,7 @@ class Game extends Phaser.State {
       if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {  
         this.smoke(player, -80);      
           
-        this.fire(player, player.angle-180);  
+        this.fire(player, 'left');  
         this.tmrShootLeft = 0;       
         this.gameObjectHandler.ui.lReload.visible = true;                    
       }
@@ -145,7 +147,7 @@ class Game extends Phaser.State {
       if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
         this.smoke(player, 80);
         
-        this.fire(player, player.angle+360);    
+        this.fire(player, 'right');    
         this.tmrShootRight = 0; 
         this.gameObjectHandler.ui.rReload.visible = true;     
       }
@@ -163,22 +165,27 @@ class Game extends Phaser.State {
     }   
   }
 
-  fire(player, angle) {
+  fire(player, gun) {
     let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
-    weapon.fireAngle = angle;     
+    if(!weapon) return;
+
+    weapon.fireAngle = gun === 'left' ? player.angle-180 : player.angle+360;      
     weapon.fire();
     if(player.id===this.myID) {
-      this.client.sendFire(angle);
+      this.client.sendFire(gun);
       this.sounds.shoot.play();
     } else {
-      this.smoke(player, angle===player.angle-180 ? -80 : 80);
+      this.smoke(player, gun === 'left' ? -80 : 80);
     }
   }
 
   smoke(player, x, delay) {
+    let smoke = player.getChildAt(1);
+    if(!smoke) return;
+
     setTimeout(() => {
-      player.getChildAt(1).x = x;        
-      player.getChildAt(1).start(true, 2000, null, 20);
+      smoke.x = x;        
+      smoke.start(true, 1500, null, 20);
     }, delay ? delay : 50);
   }
 

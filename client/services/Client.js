@@ -28,7 +28,7 @@ class Client {
     });
 
     this.socket.on('playerfire', data => {
-      game.fire(game.gameObjectHandler.getPlayer(data.id), data.angle);
+      game.fire(game.gameObjectHandler.getPlayer(data.id), data.gun);
     });
 
     this.socket.on('playerhit', data => {
@@ -61,8 +61,8 @@ class Client {
     this.socket.emit('playermove', { x, y, angle, timestamp: Date.now() });
   }
 
-  sendFire(angle) {
-    this.socket.emit('playerfire', { angle });
+  sendFire(gun) {
+    this.socket.emit('playerfire', { gun });
   }
 
   sendOnHit(victim) {

@@ -19,13 +19,17 @@ class GameObjectHandler {
     return _.find(this.players.children, {id: id});
   }
   
-  addPlayer(id, x, y) {
-    let sprite = this.game.add.sprite(x, y, 'sprite');
-    let player = Object.assign(sprite, {id: id});
+  addPlayer(data) {
+    let sprite = this.game.add.sprite(data.x, data.y, 'sprite');
+    let player = Object.assign(sprite, {id: data.id});
     this.game.physics.arcade.enable(player);
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
+    player.health = data.health;
+    player.tint = this.rgbToHex(player.health);
+    player.name = data.name;
 
+    this.addName(player);
     this.addFoamEmitter(player);
     this.addWeapon(player);  
 
@@ -33,13 +37,19 @@ class GameObjectHandler {
     this.game.world.bringToTop(this.players);  
 
     // if it's them
-    if(id===this.game.myID) {
+    if(data.id===this.game.myID) {
       this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
     }
   }
 
   getPlayerChild(group, id) {
     return _.find(group, {playerID: id});
+  }
+
+  addName(player) {
+    let name = this.game.add.text(0, 110, player.name, { font: "30px Arial", fill: "#ffffff", align: "left" });
+    name.x = name.x - name.width/2;
+    player.addChild(name);
   }
 
   addFoamEmitter(player) {
@@ -60,10 +70,15 @@ class GameObjectHandler {
   addWeapon(player) {
     let weapon = this.game.add.weapon(-1, 'cannonball');
     weapon.bulletSpeed = 300;
-    weapon.fireRate = 500;
+    weapon.fireRate = 0;
     weapon.trackSprite(player);   
+    weapon.onFire.add(this.onFire);
     weapon.playerID = player.id;
     this.weapons.push(weapon);
+  }
+
+  onFire(bullet, weapon) {
+    bullet.playerID = weapon.playerID;
   }
 
   movePlayer(id, x, y, angle) {
@@ -77,10 +92,13 @@ class GameObjectHandler {
     // update foam position
     this.anchorFoamEmitter(player, x, y);     
 
-    tween.to({ x, y, angle }, duration);
+    tween.to({ x, y }, duration);
     tween.start();
 
-    player.angle = angle;
+    player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
+    player.body.angularVelocity = 0;
+    player.angle = angle;    
   }
 
   removePlayer(id) {
@@ -96,8 +114,21 @@ class GameObjectHandler {
 
   hitPlayer(bullet, player) {
     if(player.id===this.game.myID) return;
+
     bullet.kill();
     this.game.camera.flash(0xffffff, 500);
+    this.client.sendOnHit(player.id);
+  }
+
+  handleOtherBullets(bullet, player) {
+    if(bullet.playerID===player.id) return;
+    bullet.kill();
+  }
+
+  rgbToHex(health) {
+    let h = (health / 100) * 255;
+
+    return h << 16 | h << 8 | h;
   }
 }
 

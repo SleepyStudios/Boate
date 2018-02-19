@@ -21,6 +21,7 @@ class Menu extends Phaser.State {
     this.load.image('cloud3', 'assets/sprites/cloud3.png');
     this.load.image('cloud4', 'assets/sprites/cloud4.png');
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
+    this.load.spritesheet('button', 'assets/buttons/button.png', 80, 50);
     this.add.plugin(PhaserInput.Plugin);  
     this.load.audio('music', 'assets/audio/citrus.mp3');    
   }
@@ -50,6 +51,12 @@ class Menu extends Phaser.State {
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
+    
+    this.button = this.add.button(500, 400, 'button', this.joinGame(), this, 1, 0, 2, 0);
+
+    //this.button.onInputOver.add(over, this);
+    //this.button.onInputOut.add(out, this);
+    //this.button.onInputUp.add(up, this);
 
     let text = this.add.text(this.world.centerX, this.world.centerY, this.intro + "\nENTER A NAME YE SCURVY DOG\n(press enter twice for now)", {
       font: "36px Arial",
@@ -69,6 +76,12 @@ class Menu extends Phaser.State {
     });
     this.name.setText(this.oldName);
   }
+  
+  joinGame() {
+    if(this.name.value.length>0) {
+        this.state.start('Game', true, false, {name: this.name.value});
+    }
+}
 
   update() {
     if(this.input.keyboard.isDown(Phaser.KeyCode.ENTER)) { 

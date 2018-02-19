@@ -5,6 +5,12 @@ class Game {
     this.lastPlayerID = 0;
     this.io = require('socket.io')(app);
     new ConnectionEvent(this);
+
+    this.windDirection = 0;
+    setInterval(() => {
+      this.windDirection = this.rand(0, 360);
+      this.io.emit('winddirection', {direction: this.windDirection});
+    }, 10000)
   }
 
   getAllPlayers() {

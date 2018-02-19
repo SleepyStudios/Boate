@@ -12,6 +12,8 @@ class Game extends Phaser.State {
 
     this.tmrShootLeft = 0;
     this.tmrShootRight = 0;
+
+    this.sounds = {};
   }
 
   init(args) {
@@ -24,7 +26,11 @@ class Game extends Phaser.State {
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.image('foam', 'assets/particles/foam.png'); 
-    this.load.image('cannonball', 'assets/sprites/cannonball.png');           
+    this.load.image('cannonball', 'assets/sprites/cannonball.png');   
+    
+    this.load.audio('shoot', 'assets/audio/shoot.wav');
+    this.load.audio('hit', 'assets/audio/hit.wav');    
+    this.load.audio('hurt', 'assets/audio/hurt.wav');
   }
 
   create() {
@@ -43,6 +49,11 @@ class Game extends Phaser.State {
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
+
+    // sounds
+    this.sounds.shoot = this.add.audio('shoot');
+    this.sounds.hit = this.add.audio('hit');    
+    this.sounds.hurt = this.add.audio('hurt');    
     
     this.gameObjectHandler.create();
     this.client.requestJoin();
@@ -59,7 +70,7 @@ class Game extends Phaser.State {
       // other players' bullets
       if(player.id!==this.myID) {
         let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);        
-        this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.handleOtherBullets, null, this);        
+        this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.handleOtherBullets, null, this.gameObjectHandler);        
       }
     });
 
@@ -68,7 +79,7 @@ class Game extends Phaser.State {
 
     // local player's bullets
     let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
-    this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.hitPlayer, null, this);
+    this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.hitPlayer, null, this.gameObjectHandler);
 
     // input
     this.handleInput(player);
@@ -136,7 +147,10 @@ class Game extends Phaser.State {
     let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
     weapon.fireAngle = angle;     
     weapon.fire();
-    if(player.id===this.myID) this.client.sendFire(angle);
+    if(player.id===this.myID) {
+      this.client.sendFire(angle);
+      this.sounds.shoot.play();
+    }
   }
 
   onHit(victim, health) {
@@ -144,7 +158,10 @@ class Game extends Phaser.State {
     player.health = health;
     player.tint = this.gameObjectHandler.rgbToHex(player.health);     
 
-    if(player.id===this.myID) this.camera.flash(0xff0000, 500);    
+    if(player.id===this.myID) {
+      this.camera.flash(0xff0000, 500);
+      this.sounds.hurt.play();      
+    }    
   }
 }
 

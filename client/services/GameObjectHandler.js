@@ -160,12 +160,13 @@ class GameObjectHandler {
     this.resetVelocity(player);
 
     this.game.camera.flash(0xffffff, 500);
-    this.client.sendOnHit(player.id);
+    this.game.client.sendOnHit(player.id);
+    this.game.sounds.hit.play();
   }
 
   handleOtherBullets(bullet, player) {
     if(bullet.playerID===player.id) return;
-    
+
     bullet.kill();
     this.resetVelocity(player);
   }

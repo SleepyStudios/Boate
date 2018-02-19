@@ -8,8 +8,9 @@ class NewPlayerEvent {
     socket.on('newplayer', () => {
       socket.player = {
         id: ++game.lastPlayerID,
-        x: game.rand(100, 400),
-        y: game.rand(100, 400)
+        x: game.rand(100, 1200),
+        y: game.rand(100, 1200),
+        health: 100
       }
 
       socket.emit('myid', {id: game.lastPlayerID});

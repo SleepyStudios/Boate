@@ -15,12 +15,12 @@ class Client {
     });
 
     this.socket.on('newplayer', data => {
-      game.gameObjectHandler.addPlayer(data.id, data.x, data.y);
+      game.gameObjectHandler.addPlayer(data);
     });
 
     this.socket.on('allplayers', data => {
       for(let i=0; i<data.length; i++) {
-        game.gameObjectHandler.addPlayer(data[i].id, data[i].x, data[i].y);
+        game.gameObjectHandler.addPlayer(data[i]);
       }
     });
 
@@ -37,7 +37,7 @@ class Client {
     });
 
     this.socket.on('playerhit', data => {
-      if(data.victim===game.myID) game.onHit();
+      game.onHit(data.victim, data.health);
     });
   }
 

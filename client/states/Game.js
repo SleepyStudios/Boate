@@ -102,8 +102,12 @@ class Game extends Phaser.State {
     if(player.id===this.myID) this.client.sendFire(angle);
   }
 
-  onHit() {
-    this.camera.flash(0xff0000, 500);    
+  onHit(victim, health) {
+    let player = this.gameObjectHandler.getPlayer(victim);
+    player.health = health;
+    player.tint = this.gameObjectHandler.rgbToHex(player.health);     
+
+    if(player.id===this.myID) this.camera.flash(0xff0000, 500);    
   }
 }
 

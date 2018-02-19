@@ -78,8 +78,12 @@ class Game extends Phaser.State {
       this.fire(player, player.angle+360);     
     }
 
-    this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed, player.body.velocity);       
-    this.client.sendMove(player.x, player.y, player.angle); 
+    this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed, player.body.velocity);    
+    if(!this.posInterval) {
+      this.posInterval = setInterval(() => {
+        this.client.sendMove(player.x, player.y, player.angle); 
+      }, 20);
+    }   
   }
 
   fire(player, angle) {

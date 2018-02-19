@@ -62,7 +62,7 @@ class GameObjectHandler {
   addWeapon(player) {
     let weapon = this.game.add.weapon(-1, 'cannonball');
     weapon.bulletSpeed = 300;
-    weapon.fireRate = 500;
+    weapon.fireRate = 0;
     weapon.trackSprite(player);   
     weapon.onFire.add(this.onFire);
     weapon.playerID = player.id;

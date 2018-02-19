@@ -10,6 +10,9 @@ class Game extends Phaser.State {
     this.myID = -1;
     this.moveSpeed = 30;
     this.gameObjectHandler = new GameObjectHandler(this);
+
+    this.tmrShootLeft = 0;
+    this.tmrShootRight = 0;
   }
 
   preload() {
@@ -79,14 +82,26 @@ class Game extends Phaser.State {
       player.body.angularVelocity = this.moveSpeed;  
     }
     
-    if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {    
-      this.fire(player, player.angle-180);             
+    // shooting timers
+    let shootDelay = 0.8;
+    this.tmrShootLeft+=this.time.physicsElapsed;
+    this.tmrShootRight+=this.time.physicsElapsed;
+    
+    if(this.tmrShootLeft>=shootDelay) {
+      if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {    
+        this.fire(player, player.angle-180);  
+        this.tmrShootLeft = 0;                   
+      }
     }
 
-    if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
-      this.fire(player, player.angle+360);     
+    if(this.tmrShootRight>=shootDelay) {
+      if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
+        this.fire(player, player.angle+360);    
+        this.tmrShootRight = 0; 
+      }
     }
 
+    // move
     this.physics.arcade.velocityFromAngle(player.angle-90, this.moveSpeed * 2, player.body.velocity);    
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {

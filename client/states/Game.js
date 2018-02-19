@@ -1,5 +1,6 @@
 import Client from '../services/Client'
 import GameObjectHandler from '../services/GameObjectHandler'
+import CollisionHandler from '../services/CollisionHandler'
 import _ from 'lodash'
 
 class Game extends Phaser.State {
@@ -9,6 +10,7 @@ class Game extends Phaser.State {
     this.myID = -1;
     this.moveSpeed = 30;
     this.gameObjectHandler = new GameObjectHandler(this);
+    this.collisionHandler = new CollisionHandler(this);
 
     this.tmrShootLeft = 0;
     this.tmrShootRight = 0;
@@ -26,11 +28,13 @@ class Game extends Phaser.State {
     this.load.image('sea', 'assets/sprites/mspaintblue.png');
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.image('foam', 'assets/particles/foam.png'); 
-    this.load.image('cannonball', 'assets/sprites/cannonball.png');   
+    this.load.image('cannonball', 'assets/sprites/cannonball.png');  
+    this.load.image('chest', 'assets/sprites/chest.png');        
     
     this.load.audio('shoot', 'assets/audio/shoot.wav');
     this.load.audio('hit', 'assets/audio/hit.wav');    
     this.load.audio('hurt', 'assets/audio/hurt.wav');
+    this.load.audio('coins', 'assets/audio/coins.wav');    
   }
 
   create() {
@@ -54,6 +58,7 @@ class Game extends Phaser.State {
     this.sounds.shoot = this.add.audio('shoot');
     this.sounds.hit = this.add.audio('hit');    
     this.sounds.hurt = this.add.audio('hurt');    
+    this.sounds.coins = this.add.audio('coins');
     
     this.gameObjectHandler.create();
     this.client.requestJoin();
@@ -70,7 +75,7 @@ class Game extends Phaser.State {
       // other players' bullets
       if(player.id!==this.myID) {
         let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);        
-        this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.handleOtherBullets, null, this.gameObjectHandler);        
+        this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.collisionHandler.handleOtherBullets, null, this.collisionHandler);        
       }
     });
 
@@ -79,7 +84,10 @@ class Game extends Phaser.State {
 
     // local player's bullets
     let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
-    this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.gameObjectHandler.hitPlayer, null, this.gameObjectHandler);
+    this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.collisionHandler.hitPlayer, null, this.collisionHandler);
+
+    // local player and chests
+    this.physics.arcade.collide(player, this.gameObjectHandler.chests, this.collisionHandler.collideChest, null, this.collisionHandler);    
 
     // input
     this.handleInput(player);

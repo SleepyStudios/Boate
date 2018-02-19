@@ -8,11 +8,13 @@ class GameObjectHandler {
     this.foamEmitters;
     this.weapons = [];
     this.ui = {};
+    this.chests;
   }
 
   create() {
     this.players = this.game.add.group();
     this.foamEmitters = this.game.add.group();
+    this.chests = this.game.add.group();
   }
 
   getPlayer(id) {
@@ -26,9 +28,12 @@ class GameObjectHandler {
     this.game.physics.arcade.enable(player);
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
+
+    // could porbably be done better with spread operator but im dumb
     player.health = data.health;
     player.tint = this.rgbToHex(player.health);
     player.name = data.name;
+    player.gold = data.gold;
 
     this.addName(player);
     this.addFoamEmitter(player);
@@ -40,6 +45,8 @@ class GameObjectHandler {
     // if it's the local player
     if(data.id===this.game.myID) {
       this.addUI();      
+      this.updateGold(player.gold);
+
       this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
     }
 
@@ -87,13 +94,14 @@ class GameObjectHandler {
 
   addUI() {
     this.ui.windText = this.addText(30, 30, "Wind direction: 0");
+    this.ui.goldText = this.addText(30, 60, "Gold: 0");
 
     this.ui.lReload = this.addText(30, this.game.game.height-60, "L Reloading");
     this.ui.lReload.visible = false;
     this.ui.rReload = this.addText(this.game.game.width-230, this.game.game.height-60, "R Reloading");
     this.ui.rReload.visible = false;  
     
-    this.ui.leaderboard = this.addText(30, 90, "", "left");
+    this.ui.leaderboard = this.addText(30, 120, "", "left");
   }
 
   addText(x, y, text, align) {
@@ -105,6 +113,14 @@ class GameObjectHandler {
     uiText.fixedToCamera = true;
     uiText.cameraOffset = new Phaser.Point(x, y);
     return uiText;
+  }
+
+  updateWind(wind) {
+    this.ui.windText.setText("Wind direction: " + wind);
+  }
+
+  updateGold(gold) {
+    this.ui.goldText.setText("Gold: " + gold);
   }
 
   updateLeaderboard() {
@@ -153,33 +169,17 @@ class GameObjectHandler {
     if(this.ui.leaderboard) this.updateLeaderboard();        
   }
 
-  hitPlayer(bullet, player) {
-    if(player.id===this.game.myID) return;
-
-    bullet.kill();
-    this.resetVelocity(player);
-
-    this.game.camera.flash(0xffffff, 500);
-    this.game.client.sendOnHit(player.id);
-    this.game.sounds.hit.play();
-  }
-
-  handleOtherBullets(bullet, player) {
-    if(bullet.playerID===player.id) return;
-
-    bullet.kill();
-    this.resetVelocity(player);
-  }
-
-  resetVelocity(player) {
-    player.body.velocity.x = 0;
-    player.body.velocity.y = 0;
-  }
-
   rgbToHex(health) {
     let h = (health / 100) * 255;
 
     return h << 16 | h << 8 | h;
+  }
+
+  addChest(data) {
+    let chest = this.game.add.sprite(data.x, data.y, 'chest');
+    chest.gold = data.gold;
+    this.game.physics.arcade.enable(chest);    
+    this.chests.add(chest);
   }
 }
 

@@ -41,8 +41,12 @@ class Client {
     });
 
     this.socket.on('winddirection', data => {
-      game.gameObjectHandler.ui.windText.setText("Wind direction: " + data.direction);
+      game.gameObjectHandler.updateWind(data.direction);
     });
+
+    this.socket.on('chest', data => {
+      game.gameObjectHandler.addChest(data);
+    })
   }
 
   requestJoin() {

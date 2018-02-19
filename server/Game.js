@@ -10,7 +10,9 @@ class Game {
     setInterval(() => {
       this.windDirection = this.rand(0, 360);
       this.io.emit('winddirection', {direction: this.windDirection});
-    }, 10000)
+    }, 10000);
+
+    this.chests = [{x: 100, y: 100, gold: 20}];
   }
 
   getAllPlayers() {

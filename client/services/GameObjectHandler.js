@@ -120,12 +120,10 @@ class GameObjectHandler {
     this.ui.rReload.fixedToCamera = true;
     
     this.ui.leaderboard = this.addText(30, 90, "", "left");
-
-    this.uiGroup.add(this.ui.windText);
-    this.uiGroup.add(this.ui.goldText);
-    this.uiGroup.add(this.ui.lReload);
-    this.uiGroup.add(this.ui.rReload); 
-    this.uiGroup.add(this.ui.leaderboard);           
+    
+    Object.values(this.ui).forEach(i => {
+      this.uiGroup.add(i);
+    })
   }
 
   addText(x, y, text, align, colour) {
@@ -215,9 +213,13 @@ class GameObjectHandler {
     chest.play('float');
 
     this.chests.add(chest); 
+    this.sortLayers();               
+  }
+
+  sortLayers() {
     this.game.world.bringToTop(this.chests);
     this.game.world.bringToTop(this.players);    
-    this.game.world.bringToTop(this.uiGroup);                  
+    this.game.world.bringToTop(this.uiGroup);   
   }
 
   pickupChest(data) {

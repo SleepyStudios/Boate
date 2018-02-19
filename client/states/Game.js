@@ -32,6 +32,7 @@ class Game extends Phaser.State {
     let bound = 10;
     this.add.tileSprite(bound, bound, worldSize-bound*2, worldSize-bound*2, 'sea');
     this.world.setBounds(0, 0, worldSize, worldSize);
+    this.stage.backgroundColor = '#276ace';
     
     // randomly positioned waves
     let waves = this.add.group();
@@ -102,21 +103,25 @@ class Game extends Phaser.State {
     this.tmrShootRight+=this.time.physicsElapsed;
     
     if(this.tmrShootLeft>=shootDelay) {
+      this.gameObjectHandler.ui.lReload.visible = false;      
       if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {    
         this.fire(player, player.angle-180);  
-        this.tmrShootLeft = 0;                   
+        this.tmrShootLeft = 0;       
+        this.gameObjectHandler.ui.lReload.visible = true;                    
       }
     }
 
     if(this.tmrShootRight>=shootDelay) {
+      this.gameObjectHandler.ui.rReload.visible = false;
       if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
         this.fire(player, player.angle+360);    
         this.tmrShootRight = 0; 
+        this.gameObjectHandler.ui.rReload.visible = true;        
       }
     }
 
     // wind bonus
-    let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.windText.text.split(': ')[1]));
+    let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.ui.windText.text.split(': ')[1]));
     console.log(windDiff);
 
     // move

@@ -7,7 +7,8 @@ class GameObjectHandler {
     this.players;
     this.foamEmitters;
     this.weapons = [];
-    this.windText = null;
+
+    this.ui = {};
   }
 
   create() {
@@ -84,13 +85,23 @@ class GameObjectHandler {
   }
 
   addUI() {
-    this.windText = this.game.add.text(0, 0, "Wind direction: 0", {
+    this.ui.windText = this.addText(30, 30, "Wind direction: 0");
+
+    this.ui.lReload = this.addText(30, this.game.game.height-60, "L Reloading");
+    this.ui.lReload.visible = false;
+    this.ui.rReload = this.addText(this.game.game.width-230, this.game.game.height-60, "R Reloading");
+    this.ui.rReload.visible = false;        
+  }
+
+  addText(x, y, text) {
+    let uiText = this.game.add.text(0, 0, text, {
       font: "36px Arial",
       fill: "#fff",
       align: "center"
     });
-    this.windText.fixedToCamera = true;
-    this.windText.cameraOffset = new Phaser.Point(30, 30);
+    uiText.fixedToCamera = true;
+    uiText.cameraOffset = new Phaser.Point(x, y);
+    return uiText;
   }
 
   movePlayer(id, x, y, angle) {

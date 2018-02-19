@@ -207,7 +207,7 @@ class Game extends Phaser.State {
     let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.ui.windText.text.split(': ')[1]));
 
     // move
-    if(!player.island) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
+    if(!player.island) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 1.5), player.body.velocity);    
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {
         this.client.sendMove(player.x, player.y, player.angle); 

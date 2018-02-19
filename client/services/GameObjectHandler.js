@@ -8,6 +8,7 @@ class GameObjectHandler {
     this.foamEmitters;
     this.weapons = [];
     this.ui = {};
+    this.uiGroup;
     this.chests;
     this.islands;
     this.explosions;
@@ -16,6 +17,7 @@ class GameObjectHandler {
   create() {
     this.players = this.game.add.group();
     this.foamEmitters = this.game.add.group();
+    this.uiGroup = this.game.add.group();
     this.chests = this.game.add.group();
     this.islands = this.game.add.group();  
     this.explosions = this.game.add.group();  
@@ -108,7 +110,8 @@ class GameObjectHandler {
 
   addUI() {
     this.ui.windText = this.addText(30, 30, "Wind direction: 0");
-    this.ui.goldText = this.addText(30, 60, "Your Gold: 0", null, "#ffcf35");
+    this.ui.windText.visible = false;
+    this.ui.goldText = this.addText(30, 30, "Your Gold: 0", null, "#ffcf35");
 
     this.ui.lReload = this.game.add.sprite(30, this.game.game.height-60, 'lcannon');
     this.ui.lReload.fixedToCamera = true;
@@ -116,7 +119,13 @@ class GameObjectHandler {
     this.ui.rReload = this.game.add.sprite(this.game.game.width-30-47, this.game.game.height-60, 'rcannon');
     this.ui.rReload.fixedToCamera = true;
     
-    this.ui.leaderboard = this.addText(30, 120, "", "left");
+    this.ui.leaderboard = this.addText(30, 90, "", "left");
+
+    this.uiGroup.add(this.ui.windText);
+    this.uiGroup.add(this.ui.goldText);
+    this.uiGroup.add(this.ui.lReload);
+    this.uiGroup.add(this.ui.rReload); 
+    this.uiGroup.add(this.ui.leaderboard);           
   }
 
   addText(x, y, text, align, colour) {
@@ -207,7 +216,8 @@ class GameObjectHandler {
 
     this.chests.add(chest); 
     this.game.world.bringToTop(this.chests);
-    this.game.world.bringToTop(this.players);         
+    this.game.world.bringToTop(this.players);    
+    this.game.world.bringToTop(this.uiGroup);                  
   }
 
   pickupChest(data) {

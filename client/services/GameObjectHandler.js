@@ -27,7 +27,9 @@ class GameObjectHandler {
     player.anchor.setTo(0.5, 0.5);
     player.health = data.health;
     player.tint = this.rgbToHex(player.health);
+    player.name = data.name;
 
+    this.addName(player);
     this.addFoamEmitter(player);
     this.addWeapon(player);  
 
@@ -42,6 +44,12 @@ class GameObjectHandler {
 
   getPlayerChild(group, id) {
     return _.find(group, {playerID: id});
+  }
+
+  addName(player) {
+    let name = this.game.add.text(0, 110, player.name, { font: "30px Arial", fill: "#ffffff", align: "left" });
+    name.x = name.x - name.width/2;
+    player.addChild(name);
   }
 
   addFoamEmitter(player) {

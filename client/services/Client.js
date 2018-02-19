@@ -1,14 +1,15 @@
 import Game from '../states/Game'
 
 class Client {
-  constructor(game) {
+  constructor(game, name) {
     this.socket = io.connect();
+    this.name = name;
 
-    this.socket.on('disconnect', () => {
-      setTimeout(() => {
-        location.reload();        
-      }, 2000);
-    });
+    // this.socket.on('disconnect', () => {
+    //   setTimeout(() => {
+    //     location.reload();        
+    //   }, 2000);
+    // });
 
     this.socket.on('myid', data => {
       game.myID = data.id;
@@ -42,7 +43,7 @@ class Client {
   }
 
   requestJoin() {
-    this.socket.emit('newplayer');
+    this.socket.emit('newplayer', { name: this.name });
   }
 
   sendMove(x, y, angle) {

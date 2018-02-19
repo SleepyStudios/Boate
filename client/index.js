@@ -7,7 +7,7 @@ class App extends Phaser.Game {
 
     this.state.add('Menu', Menu);    
     this.state.add('Game', Game);
-    this.state.start('Game');
+    this.state.start('Menu');
   }
 }
 

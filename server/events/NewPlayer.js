@@ -5,9 +5,10 @@ import HitEvent from './Hit'
 
 class NewPlayerEvent {
   constructor(game, socket) {
-    socket.on('newplayer', () => {
+    socket.on('newplayer', data => {
       socket.player = {
         id: ++game.lastPlayerID,
+        name: data.name,
         x: game.rand(100, 1200),
         y: game.rand(100, 1200),
         health: 100

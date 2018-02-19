@@ -6,13 +6,16 @@ class Game extends Phaser.State {
   constructor() {
     super();
 
-    this.client = new Client(this);
     this.myID = -1;
     this.moveSpeed = 30;
     this.gameObjectHandler = new GameObjectHandler(this);
 
     this.tmrShootLeft = 0;
     this.tmrShootRight = 0;
+  }
+
+  init(args) {
+    this.client = new Client(this, args.name);    
   }
 
   preload() {

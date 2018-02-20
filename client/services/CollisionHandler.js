@@ -29,7 +29,7 @@ class CollisionHandler {
   }
 
   collideChest(player, chest) {
-    if(!chest.alive) return;
+    if(!chest.alive || player.moveBlocked) return;
     this.game.client.sendPickupChest(chest.id);
     chest.kill();
   }

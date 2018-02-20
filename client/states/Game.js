@@ -207,10 +207,10 @@ class Game extends Phaser.State {
     let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.ui.windText.text.split(': ')[1]));
 
     // move
-    if(!player.island) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
+    if(!player.island && !player.moveBlocked) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {
-        this.client.sendMove(player.x, player.y, player.angle); 
+        if(!player.moveBlocked) this.client.sendMove(player.x, player.y, player.angle); 
       }, 50);
     }  
     
@@ -242,6 +242,13 @@ class Game extends Phaser.State {
     player.tint = this.gameObjectHandler.rgbToHex(player.health);  
     this.gameObjectHandler.addSmoke(player, 0, 0);  
     this.gameObjectHandler.addExplosion(player.x, player.y); 
+
+    if(player.health===0) {
+      player.moveBlocked = true;
+      setTimeout(() => {
+        player.moveBlocked = false;
+      }, 200);
+    }
 
     if(player.id===this.myID) {
       this.sounds.hurt.play();      

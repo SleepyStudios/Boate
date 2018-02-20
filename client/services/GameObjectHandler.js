@@ -223,7 +223,9 @@ class GameObjectHandler {
 
   pickupChest(data) {
     let player = this.getPlayer(data.playerID);
-    player.gold+=data.chest.gold;    
+    player.gold+=data.chest.gold;   
+    player.health=data.health;
+    player.tint = this.rgbToHex(data.health); 
 
     if(data.playerID===this.game.myID) {
       this.game.gameObjectHandler.updateGold(player.gold);
@@ -244,7 +246,7 @@ class GameObjectHandler {
     // island.angle = data.angle;
     this.game.physics.arcade.enable(island);       
     island.body.immovable = true;
-    island.body.setSize(220, 220, 40, 40);
+    island.body.setSize(200, 200, 50, 50);
 
     this.islands.add(island);
   }

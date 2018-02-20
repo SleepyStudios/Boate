@@ -6,7 +6,9 @@ class PickupChestEvent {
       let chest = _.find(game.chests, {id: data.id});
       if(chest) {
         socket.player.gold+=chest.gold;
-        socket.player.health = _.clamp(socket.player.health+25, 0, 100);
+        socket.player.health+=50;
+        if(socket.player.health>100) socket.player.health = 100;
+
         game.io.emit('pickupchest', {playerID: socket.player.id, health: socket.player.health, chest: chest});
 
         if(chest.onIsland) {

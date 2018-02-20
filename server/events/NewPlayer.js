@@ -8,7 +8,7 @@ class NewPlayerEvent {
   constructor(game, socket) {
     socket.on('newplayer', data => {
       socket.player = {
-        id: ++game.lastPlayerID,
+        id: game.id(),
         name: data.name,
         x: game.rand(100, 1200),
         y: game.rand(100, 1200),

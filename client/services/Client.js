@@ -37,7 +37,7 @@ class Client {
 
     this.socket.on('death', () => {
       this.socket.disconnect();      
-      game.state.start('Menu', true, false, {intro: "YOU DIED!", name: this.name});
+      game.state.start('Menu', true, false, {intro: "You died!", name: this.name});
     });
 
     this.socket.on('winddirection', data => {

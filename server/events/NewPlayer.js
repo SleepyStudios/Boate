@@ -17,6 +17,8 @@ class NewPlayerEvent {
         gold: 50
       }
 
+      console.log(data.name + " id is: " + id);
+
       socket.emit('myid', {id});
       socket.emit('allplayers', game.getAllPlayers());
       socket.emit('winddirection', {direction: game.windDirection});

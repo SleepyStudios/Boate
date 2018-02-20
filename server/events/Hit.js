@@ -16,8 +16,8 @@ class HitEvent {
         let oldy = player.y;
         let oldgold = player.gold;
 
-        player.x = game.rand(100, 3000);
-        player.y = game.rand(100, 3000);
+        player.x = game.rand(100, game.worldSize-300);
+        player.y = game.rand(100, game.worldSize-300);
         player.gold = 0;
         player.health = 100;
         game.io.sockets.emit('death', player);

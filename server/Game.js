@@ -38,20 +38,20 @@ class Game {
   }
 
   genIslands() {
-    let worldSize = 4096;
+    this.worldSize = 4096;
     let islandSize = 300;
-    let numIslands = Math.floor(worldSize/200);
+    let numIslands = Math.floor(this.worldSize/200);
     let numTreasures = numIslands/4;
     
     for(let i=0; i<numIslands; i++) {
-      let randX = Math.floor(Math.random() * (worldSize-islandSize));
-      let randY = Math.floor(Math.random() * (worldSize-islandSize));
+      let randX = Math.floor(Math.random() * (this.worldSize-islandSize));
+      let randY = Math.floor(Math.random() * (this.worldSize-islandSize));
 
       while(this.islands.some(i => {
         return this.getDistance(randX, randY, i)<=islandSize*1.5;
       })) {
-        randX = Math.floor(Math.random() * (worldSize-islandSize));
-        randY = Math.floor(Math.random() * (worldSize-islandSize));
+        randX = Math.floor(Math.random() * (this.worldSize-islandSize));
+        randY = Math.floor(Math.random() * (this.worldSize-islandSize));
       }
       this.islands.push({id: this.id(), x: randX, y: randY, angle: this.rand(0, 360)});
     }

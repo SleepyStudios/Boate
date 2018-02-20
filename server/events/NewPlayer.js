@@ -11,8 +11,8 @@ class NewPlayerEvent {
       socket.player = {
         id: id,
         name: data.name,
-        x: game.rand(100, 3000),
-        y: game.rand(100, 3000),
+        x: game.rand(100, game.worldSize-100),
+        y: game.rand(100, game.worldSize-100),
         health: 100,
         gold: 50
       }

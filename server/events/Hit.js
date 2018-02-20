@@ -13,7 +13,9 @@ class HitEvent {
           victimSocket.emit('death');
 
           game.addChest(player.x-50, player.y-50, false, player.gold);
-          game.io.sockets.emit('chest', game.chests[game.chests.length-1]);        
+          game.io.sockets.emit('chest', game.chests[game.chests.length-1]);   
+          
+          victimSocket.disconnect();
         }
       } else {
         socket.emit('removeplayer', player.id);

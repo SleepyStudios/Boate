@@ -180,8 +180,7 @@ class GameObjectHandler {
     this.getPlayerChild(this.foamEmitters.children, id).destroy();
     delete this.getPlayerChild(this.foamEmitters.children, id);
 
-    this.players.remove(this.getPlayer(id), true);    
-    // delete this.getPlayer(id);    
+    this.getPlayer(id).destroy();    
 
     // destroy their weapon
     // this.getPlayerChild(this.weapons, id).destroy();

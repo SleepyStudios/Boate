@@ -7,8 +7,9 @@ import PickupChestEvent from './PickupChest'
 class NewPlayerEvent {
   constructor(game, socket) {
     socket.on('newplayer', data => {
+      let id = game.id();
       socket.player = {
-        id: game.id(),
+        id: id,
         name: data.name,
         x: game.rand(100, 1200),
         y: game.rand(100, 1200),
@@ -16,7 +17,7 @@ class NewPlayerEvent {
         gold: 50
       }
 
-      socket.emit('myid', {id: game.lastPlayerID});
+      socket.emit('myid', {id});
       socket.emit('allplayers', game.getAllPlayers());
       socket.emit('winddirection', {direction: game.windDirection});
 

@@ -11,13 +11,11 @@ class NewPlayerEvent {
       socket.player = {
         id: id,
         name: data.name,
-        x: game.rand(100, 1200),
-        y: game.rand(100, 1200),
+        x: game.rand(100, 3000),
+        y: game.rand(100, 3000),
         health: 100,
         gold: 50
       }
-
-      console.log(data.name + " id is: " + id);
 
       socket.emit('myid', {id});
       socket.emit('allplayers', game.getAllPlayers());

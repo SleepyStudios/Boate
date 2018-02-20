@@ -10,15 +10,15 @@ class HitEvent {
         game.io.sockets.emit('playerhit', { victim: data.victim, health: player.health});
 
         if(player.health===0) {
-          victimSocket.emit('death');
-
           game.addChest(player.x-50, player.y-50, false, player.gold);
           game.io.sockets.emit('chest', game.chests[game.chests.length-1]);   
-          
-          victimSocket.disconnect();
+
+          player.x = game.rand(100, 3000);
+          player.y = game.rand(100, 3000);
+          player.gold = 0;
+          player.health = 100;
+          game.io.sockets.emit('death', player);
         }
-      } else {
-        socket.emit('removeplayer', player.id);
       }
     });
   }

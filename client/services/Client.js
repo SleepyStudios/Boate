@@ -35,9 +35,18 @@ class Client {
       game.onHit(data.victim, data.health);
     });
 
-    this.socket.on('death', () => {
-      this.socket.disconnect();      
-      game.state.start('Menu', true, true, {intro: "You died!", name: this.name});
+    this.socket.on('death', data => {
+      // this.socket.disconnect();      
+      // game.state.start('Menu', true, true, {intro: "You died!", name: this.name});
+      let player = game.gameObjectHandler.getPlayer(data.id);
+      if(!player) return;
+
+      player.health = data.health;
+      player.tint = game.gameObjectHandler.rgbToHex(player.health);
+      player.gold = data.gold;
+      player.x = data.x;
+      player.y = data.y;
+      game.gameObjectHandler.updateLeaderboard()
     });
 
     this.socket.on('winddirection', data => {

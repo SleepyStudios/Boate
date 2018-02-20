@@ -36,8 +36,6 @@ class Client {
     });
 
     this.socket.on('death', data => {
-      // this.socket.disconnect();      
-      // game.state.start('Menu', true, true, {intro: "You died!", name: this.name});
       let player = game.gameObjectHandler.getPlayer(data.id);
       if(!player) return;
 
@@ -46,7 +44,8 @@ class Client {
       player.gold = data.gold;
       player.x = data.x;
       player.y = data.y;
-      game.gameObjectHandler.updateLeaderboard()
+      game.gameObjectHandler.updateLeaderboard();
+      if(player.id===game.myID) game.gameObjectHandler.updateGold(player.gold);
     });
 
     this.socket.on('winddirection', data => {

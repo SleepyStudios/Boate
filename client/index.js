@@ -3,7 +3,7 @@ import Game from './states/Game'
 
 class App extends Phaser.Game {
   constructor() {
-    super(1200, 720, Phaser.AUTO);
+    super(1200, 720, Phaser.AUTO, 'game');
 
     this.state.add('Menu', Menu);    
     this.state.add('Game', Game);

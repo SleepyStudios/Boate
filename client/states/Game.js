@@ -171,13 +171,13 @@ class Game extends Phaser.State {
         player.body.angularVelocity = this.moveSpeed;  
       }
     } else {
-      let tween = this.game.add.tween(player);    
-      tween.to({ angle: Math.ceil((player.angle)/90) * 90 }, 200);
-      tween.start();
+      // let tween = this.game.add.tween(player);    
+      // tween.to({ angle: Math.ceil((player.angle)/90) * 90 }, 200);
+      // tween.start();
     }
     
     // shooting timers
-    let shootDelay = 0.8;
+    let shootDelay = 1;
     this.tmrShootLeft+=this.time.physicsElapsed;
     this.tmrShootRight+=this.time.physicsElapsed;
     

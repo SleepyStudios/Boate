@@ -6,7 +6,7 @@ class HitEvent {
 
       if(!player) return;
       
-      player.health-=10;
+      player.health-=15;
       if(player.health<0) player.health = 0;
 
       game.io.sockets.emit('playerhit', { victim: data.victim, health: player.health});
@@ -22,7 +22,7 @@ class HitEvent {
         player.health = 100;
         game.io.sockets.emit('death', player);
 
-        game.addChest(oldx-50, oldy-50, false, oldgold);
+        game.addChest(oldx-50, oldy-50, false, oldgold*0.5);
         game.io.sockets.emit('chest', game.chests[game.chests.length-1]); 
       }
     });

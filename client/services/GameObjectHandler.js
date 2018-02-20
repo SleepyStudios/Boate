@@ -97,7 +97,8 @@ class GameObjectHandler {
     let weapon = this.game.add.weapon(-1, 'cannonball');
     weapon.bulletSpeed = 300;
     weapon.fireRate = 0;
-    weapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
+    weapon.bulletKillType = Phaser.Weapon.KILL_DISTANCE;
+    weapon.bulletKillDistance = this.game.game.width;
     weapon.trackSprite(player);   
     weapon.onFire.add(this.onFire);
     weapon.playerID = player.id;

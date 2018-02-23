@@ -1,6 +1,8 @@
 class HitEvent {
   constructor(game, socket) {
     socket.on('playerhit', data => {
+      if(!this.getPlayer(game, data.victim)) return;
+
       let player = this.getPlayer(game, data.victim).player;
       let victimSocket = this.getPlayer(game, data.victim).socket;
 

@@ -42,8 +42,8 @@ class Game extends Phaser.State {
     this.load.image('rcannon', 'assets/sprites/rightcannon.png'); 
     
     this.load.audio('shoot', 'assets/audio/shoot.wav');
-    this.load.audio('hit', 'assets/audio/hit.wav', 0.3);    
-    this.load.audio('hurt', 'assets/audio/hit.wav', 0.3);
+    this.load.audio('hit', 'assets/audio/hit.wav');    
+    this.load.audio('hurt', 'assets/audio/hit.wav');
     this.load.audio('coins', 'assets/audio/coins.wav');    
   }
 
@@ -54,12 +54,16 @@ class Game extends Phaser.State {
     this.world.setBounds(0, 0, worldSize, worldSize);
     this.stage.backgroundColor = '#276ace';
     
-    // randomly positioned waves
+    // positioned waves
     let waves = this.add.group();
-    for(let i = 0; i < 100; i++) {
-      let randX = Math.floor(Math.random() * worldSize);
-      let randY = Math.floor(Math.random() * worldSize);
-      waves.create(randX, randY, 'waves');
+    for(let i = 0; i < 15; i++) {
+      //let randX = Math.floor(Math.random() * worldSize);
+      //let randY = Math.floor(Math.random() * worldSize);
+      for(let j = 0; j < 15; j++) {
+        if (j%2 == 0)
+          waves.create((worldSize/30) + i*(worldSize/15), j*(worldSize/15), 'waves');
+        else waves.create(i*(worldSize/15), j*(worldSize/15), 'waves');
+      }
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
@@ -81,17 +85,17 @@ class Game extends Phaser.State {
   update() {
     this.gameObjectHandler.players.children.forEach(player => {
       // foam fadeout      
-      let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);
+      /*let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);                                 -------------------------------------
       emitter.forEachAlive(p => {
         //p.alpha = p.lifespan / emitter.lifespan;	
-      });
+      });*/
 
-      let smoke = player.getChildAt(1);
+      /*let smoke = player.getChildAt(1);                                                                                 -----------------------------------------------------------
       if(smoke) {
         smoke.forEachAlive(p => {
           if(p.lifespan < emitter.lifespan*0.75) p.alpha = p.lifespan/emitter.lifespan;
         });
-      }
+      }*/
 
       // other players' bullets
       if(player.id!==this.myID) {
@@ -134,7 +138,7 @@ class Game extends Phaser.State {
     this.handleInput(player);
 
     // foam position
-    this.gameObjectHandler.anchorFoamEmitter(player, player.x, player.y);
+    //this.gameObjectHandler.anchorFoamEmitter(player, player.x, player.y);                                         --------------------------------------------
   }
 
   render() {
@@ -185,8 +189,8 @@ class Game extends Phaser.State {
     if(this.tmrShootLeft>=shootDelay) {
       this.gameObjectHandler.ui.lReload.alpha = 1;      
       if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {  
-        this.gameObjectHandler.addSmoke(player, -80);      
-          
+        //this.gameObjectHandler.addSmoke(player, -80);                     ----------------------------------------------------
+        
         this.fire(player, 'left');  
         this.tmrShootLeft = 0;       
         this.gameObjectHandler.ui.lReload.alpha = 0.4;                    
@@ -196,7 +200,7 @@ class Game extends Phaser.State {
     if(this.tmrShootRight>=shootDelay) {
       this.gameObjectHandler.ui.rReload.alpha = 1;
       if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
-        this.gameObjectHandler.addSmoke(player, 80);
+        //this.gameObjectHandler.addSmoke(player, 80);                        --------------------------------------------------------
         
         this.fire(player, 'right');    
         this.tmrShootRight = 0; 
@@ -231,7 +235,7 @@ class Game extends Phaser.State {
       this.client.sendFire(gun);
       this.sounds.shoot.play();
     } else {
-      this.gameObjectHandler.addSmoke(player, gun === 'left' ? -90 : 90);
+      //this.gameObjectHandler.addSmoke(player, gun === 'left' ? -90 : 90);                                        --------------------------------------------------
     }
   }
 
@@ -241,7 +245,7 @@ class Game extends Phaser.State {
 
     player.health = health;
     player.tint = this.gameObjectHandler.rgbToHex(player.health);  
-    this.gameObjectHandler.addSmoke(player, 0, 0);  
+    //this.gameObjectHandler.addSmoke(player, 0, 0);                                                              -------------------------------------------------------
     this.gameObjectHandler.addExplosion(player.x, player.y); 
 
     if(player.health===0) {

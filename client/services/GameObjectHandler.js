@@ -43,8 +43,8 @@ class GameObjectHandler {
     player.gold = data.gold;
 
     this.addName(player);
-    this.addFoamEmitter(player);
-    this.addSmokeEmitter(player);
+    //this.addFoamEmitter(player);
+    //this.addSmokeEmitter(player);
     this.addWeapon(player);  
 
     this.players.add(player);

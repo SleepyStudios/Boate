@@ -222,8 +222,9 @@ class Game extends Phaser.State {
   }
 
   fire(player, gun) {
+    if(!player) return;
     let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
-    if(!weapon || !player) return;
+    if(!weapon) return;
 
     weapon.fireAngle = gun === 'left' ? player.angle-180 : player.angle+360;      
     weapon.fire();

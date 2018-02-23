@@ -7,7 +7,7 @@ class CollisionHandler {
   }
 
   hitPlayer(bullet, player) {
-    if(player.id===this.game.myID) return;
+    if(!player || player.id===this.game.myID) return;
 
     bullet.kill();
     this.resetVelocity(player);
@@ -17,7 +17,7 @@ class CollisionHandler {
   }
 
   handleOtherBullets(bullet, player) {
-    if(bullet.playerID===player.id) return;
+    if(!player || bullet.playerID===player.id) return;
 
     bullet.kill();
     this.resetVelocity(player);

@@ -75,9 +75,9 @@ class GameObjectHandler {
     let foam = this.game.add.emitter(player.x, player.y, 200);
     foam.makeParticles('foam');
     foam.gravity = 0;
-    foam.setXSpeed(0);  
+    foam.setXSpeed(0);
     foam.setScale(0.5, 0.5, 0.5, 0.5);    
-    foam.start(false, 2000, 40);
+    foam.start(false, 2000, 100);
     foam.playerID = player.id;
     this.foamEmitters.add(foam);
   }

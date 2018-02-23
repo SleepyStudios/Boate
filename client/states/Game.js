@@ -8,7 +8,8 @@ class Game extends Phaser.State {
     super();
 
     this.myID = -1;
-    this.moveSpeed = 50;
+    this.moveSpeed = 60;
+    this.turnSpeed = 30;
     this.gameObjectHandler = new GameObjectHandler(this);
     this.collisionHandler = new CollisionHandler(this);
 
@@ -76,7 +77,7 @@ class Game extends Phaser.State {
     this.gameObjectHandler.create();
     this.client.requestJoin();
   }
-
+  
   update() {
     this.gameObjectHandler.players.children.forEach(player => {
       // foam fadeout      
@@ -88,7 +89,7 @@ class Game extends Phaser.State {
       let smoke = player.getChildAt(1);
       if(smoke) {
         smoke.forEachAlive(p => {
-          if(p.lifespan < emitter.lifespan*0.75) p.alpha = 0.5 + (p.lifespan / emitter.lifespan);
+          if(p.lifespan < emitter.lifespan*0.75) p.alpha = p.lifespan/emitter.lifespan;
         });
       }
 
@@ -164,11 +165,11 @@ class Game extends Phaser.State {
     
     if(!player.island) {
       if(this.input.keyboard.isDown(Phaser.KeyCode.A)) {
-        player.body.angularVelocity = -this.moveSpeed; 
+        player.body.angularVelocity = -this.turnSpeed; 
       }
     
       if(this.input.keyboard.isDown(Phaser.KeyCode.D)) { 
-        player.body.angularVelocity = this.moveSpeed;  
+        player.body.angularVelocity = this.turnSpeed;  
       }
     } else {
       // let tween = this.game.add.tween(player);    
@@ -177,7 +178,7 @@ class Game extends Phaser.State {
     }
     
     // shooting timers
-    let shootDelay = 1;
+    let shootDelay = 1.5;
     this.tmrShootLeft+=this.time.physicsElapsed;
     this.tmrShootRight+=this.time.physicsElapsed;
     
@@ -188,7 +189,7 @@ class Game extends Phaser.State {
           
         this.fire(player, 'left');  
         this.tmrShootLeft = 0;       
-        this.gameObjectHandler.ui.lReload.alpha = 0.5;                    
+        this.gameObjectHandler.ui.lReload.alpha = 0.4;                    
       }
     }
 
@@ -199,7 +200,7 @@ class Game extends Phaser.State {
         
         this.fire(player, 'right');    
         this.tmrShootRight = 0; 
-        this.gameObjectHandler.ui.rReload.alpha = 0.5;     
+        this.gameObjectHandler.ui.rReload.alpha = 0.4;     
       }
     }
 
@@ -230,7 +231,7 @@ class Game extends Phaser.State {
       this.client.sendFire(gun);
       this.sounds.shoot.play();
     } else {
-      this.gameObjectHandler.addSmoke(player, gun === 'left' ? -80 : 80);
+      this.gameObjectHandler.addSmoke(player, gun === 'left' ? -90 : 90);
     }
   }
 

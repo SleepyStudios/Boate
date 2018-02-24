@@ -226,7 +226,7 @@ class GameObjectHandler {
 
       setTimeout(() => {
         player.renderable = true;
-      }, 500);
+      }, 1000);
     }
   }
 

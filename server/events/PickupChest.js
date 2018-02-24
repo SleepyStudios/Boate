@@ -18,7 +18,6 @@ class PickupChestEvent {
           }
 
           game.addChest(randIsland.x, randIsland.y, true);
-          game.io.emit('chest', game.chests[game.chests.length-1]);
         }
 
         _.remove(game.chests, {id: data.id});

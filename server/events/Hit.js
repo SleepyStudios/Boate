@@ -25,7 +25,6 @@ class HitEvent {
         game.io.sockets.emit('death', player);
 
         game.addChest(oldx-50, oldy-50, false, Math.floor(oldgold*0.5));
-        game.io.sockets.emit('chest', game.chests[game.chests.length-1]); 
       }
     });
   }

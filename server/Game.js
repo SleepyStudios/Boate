@@ -68,6 +68,7 @@ class Game {
   addChest(x, y, onIsland, gold) {
     let chest = {id: this.id(), x, y, onIsland, gold: gold ? gold : this.rand(50, 200)};
     this.chests.push(chest);
+    this.io.sockets.emit('chest', chest);     
   }
 }
 

@@ -267,7 +267,7 @@ class GameObjectHandler {
     player.tint = this.rgbToHex(data.health); 
 
     if(data.playerID===this.game.myID) {
-      this.game.gameObjectHandler.updateGold(player.gold);
+      this.updateGold(player.gold);
       this.game.sounds.coins.play();
     } else {
       let me = this.getPlayer(this.game.myID);

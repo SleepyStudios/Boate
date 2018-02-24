@@ -38,7 +38,7 @@ class Game {
     this.worldSize = 4096;
     let islandSize = 300;
     let numIslands = Math.floor(this.worldSize/200);
-    let numTreasures = numIslands/4;
+    let numTreasures = Math.floor(numIslands/4);
     
     for(let i=0; i<numIslands; i++) {
       let randX = Math.floor(Math.random() * (this.worldSize-islandSize));
@@ -54,7 +54,13 @@ class Game {
     }
 
     for(let i=0; i<numTreasures; i++) {
-      this.addChest(this.islands[i].x, this.islands[i].y, true);
+      let randIsland = this.rand(0, this.islands.length-1);
+      while(this.islands[randIsland].hasChest) {
+        randIsland = this.rand(0, this.islands.length-1);
+      }
+
+      this.islands[randIsland].hasChest = true;      
+      this.addChest(this.islands[randIsland].x, this.islands[randIsland].y, true);      
     }
   }
 

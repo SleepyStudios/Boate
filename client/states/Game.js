@@ -189,7 +189,6 @@ class Game extends Phaser.State {
     
     if(this.tmrShootLeft>=shootDelay) {
       let lReload = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.ui, 'lreload');
-      console.log(this.gameObjectHandler.ui);
       lReload.alpha = 1;      
       if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {  
         this.gameObjectHandler.addSmoke(player, -80);

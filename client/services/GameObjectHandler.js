@@ -43,8 +43,8 @@ class GameObjectHandler {
     player.gold = data.gold;
 
     this.addName(player);
-    //this.addFoamEmitter(player);
-    //this.addSmokeEmitter(player);
+    this.addFoamEmitter(player);
+    this.addSmokeEmitter(player);
     this.addWeapon(player);  
 
     this.players.add(player);
@@ -158,15 +158,18 @@ class GameObjectHandler {
     let player = this.getPlayer(id);
     if(!player) return;
 
-    let distance = Phaser.Math.distance(player.x, player.y, x, y);
-    let duration = 100;
-    let tween = this.game.add.tween(player);
-
     // update foam position
     this.anchorFoamEmitter(player, x, y);     
-
-    tween.to({ x, y }, duration);
-    tween.start();
+  
+    if(player.renderable) {
+      let tween = this.game.add.tween(player);    
+      tween.to({ x, y }, 100);
+      tween.start();
+    } else {
+      player.x = x;
+      player.y = y;
+      player.renderable = true;
+    }
 
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
@@ -191,9 +194,26 @@ class GameObjectHandler {
     if(this.ui.leaderboard) this.updateLeaderboard();        
   }
 
+  onDeath(data) {
+    let player = this.getPlayer(data.id);
+    if(!player) return;
+
+    player.health = data.health;
+    player.tint = this.rgbToHex(player.health);
+    player.gold = data.gold;
+    player.x = data.x;
+    player.y = data.y;
+    this.updateLeaderboard();
+
+    if(player.id===this.game.myID) {
+      player.island = null;      
+      player.renderable = true;
+      this.updateGold(player.gold);
+    }
+  }
+
   rgbToHex(health) {
     let h = (health / 100) * 255;
-
     return h << 16 | h << 8 | h;
   }
 

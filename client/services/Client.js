@@ -36,16 +36,7 @@ class Client {
     });
 
     this.socket.on('death', data => {
-      let player = game.gameObjectHandler.getPlayer(data.id);
-      if(!player) return;
-
-      player.health = data.health;
-      player.tint = game.gameObjectHandler.rgbToHex(player.health);
-      player.gold = data.gold;
-      player.x = data.x;
-      player.y = data.y;
-      game.gameObjectHandler.updateLeaderboard();
-      if(player.id===game.myID) game.gameObjectHandler.updateGold(player.gold);
+      game.gameObjectHandler.onDeath(data);
     });
 
     this.socket.on('winddirection', data => {

@@ -7,8 +7,7 @@ class GameObjectHandler {
     this.players;
     this.foamEmitters;    
     this.weapons = [];
-    this.ui = {};
-    this.uiGroup;
+    this.ui;
     this.chests;
     this.islands;
     this.explosions;
@@ -17,7 +16,7 @@ class GameObjectHandler {
   create() {
     this.players = this.game.add.group();
     this.foamEmitters = this.game.add.group();    
-    this.uiGroup = this.game.add.group();
+    this.ui = this.game.add.group();
     this.chests = this.game.add.group();
     this.islands = this.game.add.group();  
     this.explosions = this.game.add.group();  
@@ -57,12 +56,12 @@ class GameObjectHandler {
       this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
     }
 
-    if(this.ui.leaderboard) this.updateLeaderboard();    
+    if(this.getGroupChild(this.ui, 'leaderboard')) this.updateLeaderboard();    
     this.sortLayers();                   
   }
 
-  getGroupChild(group, id) {
-    return _.find(group, {playerID: id});
+  getGroupChild(group, id, array) {
+    return _.find(array ? group : group.children, {playerID: id});
   }
 
   addName(player) {
@@ -83,8 +82,8 @@ class GameObjectHandler {
   }
 
   anchorFoamEmitter(player, x, y) {
-    this.getGroupChild(this.foamEmitters.children, player.id).x = x;
-    this.getGroupChild(this.foamEmitters.children, player.id).y = y-20;    
+    this.getGroupChild(this.foamEmitters, player.id).x = x;
+    this.getGroupChild(this.foamEmitters, player.id).y = y-20;    
   }
 
   addSmokeEmitter(player) {
@@ -118,21 +117,28 @@ class GameObjectHandler {
   }
 
   addUI() {
-    this.ui.windText = this.addText(30, 30, "Wind direction: 0");
-    this.ui.windText.visible = false;
-    this.ui.goldText = this.addText(30, 30, "Your Gold: 0", null, "#ffcf35");
+    let windText = this.addText(30, 30, "Wind direction: 0");
+    windText.visible = false;
+    windText.playerID = 'wind';
+    this.ui.add(windText);
 
-    this.ui.lReload = this.game.add.sprite(30, this.game.game.height-60, 'lcannon');
-    this.ui.lReload.fixedToCamera = true;
+    let goldText = this.addText(30, 30, "Your Gold: 0", null, "#ffcf35");
+    goldText.playerID = 'gold';    
+    this.ui.add(goldText);    
+
+    let lReload = this.game.add.sprite(30, this.game.game.height-60, 'lcannon');
+    lReload.fixedToCamera = true;
+    lReload.playerID = 'lreload';    
+    this.ui.add(lReload);        
     
-    this.ui.rReload = this.game.add.sprite(this.game.game.width-30-47, this.game.game.height-60, 'rcannon');
-    this.ui.rReload.fixedToCamera = true;
+    let rReload = this.game.add.sprite(this.game.game.width-30-47, this.game.game.height-60, 'rcannon');
+    rReload.fixedToCamera = true;
+    rReload.playerID = 'rreload';        
+    this.ui.add(rReload);        
     
-    this.ui.leaderboard = this.addText(30, 90, "", "left");
-    
-    Object.values(this.ui).forEach(i => {
-      this.uiGroup.add(i);
-    })
+    let leaderboard = this.addText(30, 90, "", "left");
+    leaderboard.playerID = 'leaderboard';        
+    this.ui.add(leaderboard);        
   }
 
   addText(x, y, text, align, colour) {
@@ -147,19 +153,22 @@ class GameObjectHandler {
   }
 
   updateWind(wind) {
-    if(this.ui.windText) this.ui.windText.setText("Wind direction: " + wind);
+    let text = this.getGroupChild(this.ui, 'wind');
+    if(text) text.setText("Wind direction: " + wind);
   }
 
   updateGold(gold) {
-    if(this.ui.goldText) this.ui.goldText.setText("Your Gold: " + gold + "g");
+    let text = this.getGroupChild(this.ui, 'gold');    
+    if(text) text.setText("Your Gold: " + gold + "g");
   }
 
   updateLeaderboard() {
+    let leaderboard = this.getGroupChild(this.ui, 'leaderboard');
     let text = "Wanted:";
     _.sortBy(this.players.children, 'gold').reverse().forEach(p => {
       text += "\n" + p.name + ": " + p.gold + "g";
     });
-    this.ui.leaderboard.setText(text);
+    leaderboard.setText(text);
   }
 
   movePlayer(id, x, y, angle) {
@@ -188,7 +197,7 @@ class GameObjectHandler {
   removePlayer(id) {
     if(!this.getPlayer(id)) return;
 
-    this.getGroupChild(this.foamEmitters.children, id).destroy();
+    this.getGroupChild(this.foamEmitters, id).destroy();
     this.getPlayer(id).destroy();    
 
     // destroy their weapon
@@ -196,7 +205,8 @@ class GameObjectHandler {
     // delete this.getPlayerChild(this.weapons, id);
 
     // update the leaderboards
-    if(this.ui.leaderboard) this.updateLeaderboard();        
+    let leaderboard = this.getGroupChild(this.ui, 'leaderboard');
+    if(leaderboard) this.updateLeaderboard();        
   }
 
   onDeath(data) {
@@ -247,7 +257,7 @@ class GameObjectHandler {
   sortLayers() {
     this.game.world.bringToTop(this.chests);
     this.game.world.bringToTop(this.players);    
-    this.game.world.bringToTop(this.uiGroup);   
+    this.game.world.bringToTop(this.ui);   
   }
 
   pickupChest(data) {

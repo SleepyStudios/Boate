@@ -85,7 +85,7 @@ class Game extends Phaser.State {
   update() {
     this.gameObjectHandler.players.children.forEach(player => {
       // foam fadeout      
-      let foam = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.foamEmitters.children, player.id);   
+      let foam = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.foamEmitters, player.id);   
       if(foam) {                         
         foam.forEachAlive(p => {
           // p.alpha = p.lifespan / foam.lifespan;	
@@ -101,7 +101,7 @@ class Game extends Phaser.State {
 
       // other players' bullets
       if(player.id!==this.myID) {
-        let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id);        
+        let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id, true);        
         this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.collisionHandler.handleOtherBullets, null, this.collisionHandler);        
       }
     });
@@ -110,7 +110,7 @@ class Game extends Phaser.State {
     if(!player) return;   
 
     // local player's bullets
-    let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id);
+    let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id, true);
     this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.collisionHandler.hitPlayer, null, this.collisionHandler);
 
     // local player and chests
@@ -188,29 +188,32 @@ class Game extends Phaser.State {
     this.tmrShootRight+=this.time.physicsElapsed;
     
     if(this.tmrShootLeft>=shootDelay) {
-      this.gameObjectHandler.ui.lReload.alpha = 1;      
+      let lReload = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.ui, 'lreload');
+      console.log(this.gameObjectHandler.ui);
+      lReload.alpha = 1;      
       if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {  
         this.gameObjectHandler.addSmoke(player, -80);
         
         this.fire(player, 'left');  
         this.tmrShootLeft = 0;       
-        this.gameObjectHandler.ui.lReload.alpha = 0.4;                    
+        lReload.alpha = 0.4;                    
       }
     }
 
     if(this.tmrShootRight>=shootDelay) {
-      this.gameObjectHandler.ui.rReload.alpha = 1;
+      let rReload = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.ui, 'rreload');      
+      rReload.alpha = 1;
       if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
         this.gameObjectHandler.addSmoke(player, 80);
         
         this.fire(player, 'right');    
         this.tmrShootRight = 0; 
-        this.gameObjectHandler.ui.rReload.alpha = 0.4;     
+        rReload.alpha = 0.4;     
       }
     }
 
     // wind bonus
-    let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.ui.windText.text.split(': ')[1]));
+    // let windDiff = Math.abs((player.angle-90) - Number(this.gameObjectHandler.ui.windText.text.split(': ')[1]));
 
     // move
     if(!player.island && player.renderable) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
@@ -228,7 +231,7 @@ class Game extends Phaser.State {
 
   fire(player, gun) {
     if(!player) return;
-    let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id);
+    let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id, true);
     if(!weapon) return;
 
     weapon.fireAngle = gun === 'left' ? player.angle-180 : player.angle+360;      

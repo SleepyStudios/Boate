@@ -3,15 +3,7 @@ class Menu extends Phaser.State {
     super();
 
     this.intro = "BOATE"
-    this.name;
-    this.oldName = "";
     this.music;
-  }
-
-  init(args) {
-    if(!args) return;
-    this.intro = args.intro;
-    this.oldName = args.name;
   }
 
   preload() {
@@ -20,11 +12,14 @@ class Menu extends Phaser.State {
     this.load.image('cloud2', 'assets/sprites/cloud2.png');
     this.load.image('cloud3', 'assets/sprites/cloud3.png');
     this.load.image('cloud4', 'assets/sprites/cloud4.png');
+    this.load.image('logo', 'assets/sprites/boatyio.png');
+
     this.load.spritesheet('waves', 'assets/sprites/waves.png', 100, 100);
     this.load.spritesheet('button', 'assets/sprites/button.png', 80, 50);
-    this.add.plugin(PhaserInput.Plugin);  
+
     this.load.audio('music', 'assets/audio/citrus.mp3');   
     
+    this.add.plugin(PhaserInput.Plugin);      
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   }
 
@@ -54,13 +49,11 @@ class Menu extends Phaser.State {
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);
     waves.callAll('play', null, 'waves');
     
+    // join button
     this.button = this.add.button(this.world.centerX+90, this.world.centerY+83, 'button', this.joinGame, this, 1, 0, 2, 0);
 
-    //this.button.onInputOver.add(over, this);
-    //this.button.onInputOut.add(out, this);
-    //this.button.onInputUp.add(up, this);
-
-    let text = this.add.text(this.world.centerX, this.world.centerY, this.intro + "\nChoose a name!", {
+    // text
+    let text = this.add.text(this.world.centerX, this.world.centerY+50, "Choose a name!", {
       font: "36px Arial",
       fill: "#fff",
       align: "center"
@@ -68,6 +61,7 @@ class Menu extends Phaser.State {
     text.anchor.setTo(0.5, 0.5);
     text.addColor("#000000", 0); 
 
+    // input
     this.name = this.add.inputField(this.world.centerX-(200/2)-(80/2)-10, this.world.centerY+90, {
       font: '18px Arial',
       width: 200,
@@ -76,7 +70,10 @@ class Menu extends Phaser.State {
       max: "10",
       placeHolder: "Your name"
     });
-    this.name.setText(this.oldName);
+
+    // logo
+    this.logo = this.add.image(0, 100, 'logo');
+    this.logo.x = this.game.width/2 - this.logo.width/2;
   }
   
   joinGame() {

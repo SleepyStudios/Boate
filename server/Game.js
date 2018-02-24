@@ -2,7 +2,6 @@ import ConnectionEvent from './events/Connection'
 
 class Game {
   constructor(app) {
-    this.lastPlayerID = 0;
     this.io = require('socket.io')(app);
     new ConnectionEvent(this);
 

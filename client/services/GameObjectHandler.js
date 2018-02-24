@@ -61,7 +61,7 @@ class GameObjectHandler {
     this.sortLayers();                   
   }
 
-  getPlayerChild(group, id) {
+  getGroupChild(group, id) {
     return _.find(group, {playerID: id});
   }
 
@@ -83,8 +83,8 @@ class GameObjectHandler {
   }
 
   anchorFoamEmitter(player, x, y) {
-    this.getPlayerChild(this.foamEmitters.children, player.id).x = x;
-    this.getPlayerChild(this.foamEmitters.children, player.id).y = y-20;    
+    this.getGroupChild(this.foamEmitters.children, player.id).x = x;
+    this.getGroupChild(this.foamEmitters.children, player.id).y = y-20;    
   }
 
   addSmokeEmitter(player) {
@@ -188,11 +188,11 @@ class GameObjectHandler {
   removePlayer(id) {
     if(!this.getPlayer(id)) return;
 
-    this.getPlayerChild(this.foamEmitters.children, id).destroy();
+    this.getGroupChild(this.foamEmitters.children, id).destroy();
     this.getPlayer(id).destroy();    
 
     // destroy their weapon
-    // this.getPlayerChild(this.weapons, id).destroy();
+    // this.getGroupChild(this.weapons, id).destroy();
     // delete this.getPlayerChild(this.weapons, id);
 
     // update the leaderboards
@@ -216,7 +216,7 @@ class GameObjectHandler {
 
       setTimeout(() => {
         player.renderable = true;
-      }, 1000);
+      }, 500);
     }
   }
 

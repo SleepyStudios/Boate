@@ -49,10 +49,10 @@ class Game extends Phaser.State {
 
   create() {
     let worldSize = 4096;
-    let bound = 10;
+    let bound = 0; //10;
     this.add.tileSprite(bound, bound, worldSize-bound*2, worldSize-bound*2, 'sea');
     this.world.setBounds(0, 0, worldSize, worldSize);
-    this.stage.backgroundColor = '#276ace';
+    // this.stage.backgroundColor = '#276ace';
     
     // positioned waves
     let waves = this.add.group();
@@ -85,7 +85,7 @@ class Game extends Phaser.State {
   update() {
     this.gameObjectHandler.players.children.forEach(player => {
       // foam fadeout      
-      let foam = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);   
+      let foam = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.foamEmitters.children, player.id);   
       if(foam) {                         
         foam.forEachAlive(p => {
           // p.alpha = p.lifespan / foam.lifespan;	
@@ -101,7 +101,7 @@ class Game extends Phaser.State {
 
       // other players' bullets
       if(player.id!==this.myID) {
-        let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);        
+        let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id);        
         this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.collisionHandler.handleOtherBullets, null, this.collisionHandler);        
       }
     });
@@ -110,7 +110,7 @@ class Game extends Phaser.State {
     if(!player) return;   
 
     // local player's bullets
-    let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
+    let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id);
     this.physics.arcade.collide(weapon.bullets, this.gameObjectHandler.players, this.collisionHandler.hitPlayer, null, this.collisionHandler);
 
     // local player and chests
@@ -228,7 +228,7 @@ class Game extends Phaser.State {
 
   fire(player, gun) {
     if(!player) return;
-    let weapon = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.weapons, player.id);
+    let weapon = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.weapons, player.id);
     if(!weapon) return;
 
     weapon.fireAngle = gun === 'left' ? player.angle-180 : player.angle+360;      

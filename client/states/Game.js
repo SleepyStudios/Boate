@@ -85,17 +85,19 @@ class Game extends Phaser.State {
   update() {
     this.gameObjectHandler.players.children.forEach(player => {
       // foam fadeout      
-      /*let emitter = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);                                 -------------------------------------
-      emitter.forEachAlive(p => {
-        //p.alpha = p.lifespan / emitter.lifespan;	
-      });*/
+      let foam = this.gameObjectHandler.getPlayerChild(this.gameObjectHandler.foamEmitters.children, player.id);   
+      if(foam) {                         
+        foam.forEachAlive(p => {
+          // p.alpha = p.lifespan / foam.lifespan;	
+        });
+      }
 
-      /*let smoke = player.getChildAt(1);                                                                                 -----------------------------------------------------------
+      let smoke = player.getChildAt(1);                                                                                 
       if(smoke) {
         smoke.forEachAlive(p => {
-          if(p.lifespan < emitter.lifespan*0.75) p.alpha = p.lifespan/emitter.lifespan;
+          if(p.lifespan < smoke.lifespan*0.75) p.alpha = p.lifespan/smoke.lifespan;
         });
-      }*/
+      }
 
       // other players' bullets
       if(player.id!==this.myID) {
@@ -115,7 +117,6 @@ class Game extends Phaser.State {
     this.physics.arcade.collide(player, this.gameObjectHandler.chests, this.collisionHandler.collideChest, null, this.collisionHandler);
     
     // islands
-    // player.island = null;
     this.physics.arcade.collide(player, this.gameObjectHandler.islands, this.collisionHandler.collideIsland, null, this.collisionHandler); 
     
     // docking
@@ -138,7 +139,7 @@ class Game extends Phaser.State {
     this.handleInput(player);
 
     // foam position
-    //this.gameObjectHandler.anchorFoamEmitter(player, player.x, player.y);                                         --------------------------------------------
+   this.gameObjectHandler.anchorFoamEmitter(player, player.x, player.y); 
   }
 
   render() {
@@ -189,7 +190,7 @@ class Game extends Phaser.State {
     if(this.tmrShootLeft>=shootDelay) {
       this.gameObjectHandler.ui.lReload.alpha = 1;      
       if(this.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {  
-        //this.gameObjectHandler.addSmoke(player, -80);                     ----------------------------------------------------
+        this.gameObjectHandler.addSmoke(player, -80);
         
         this.fire(player, 'left');  
         this.tmrShootLeft = 0;       
@@ -200,7 +201,7 @@ class Game extends Phaser.State {
     if(this.tmrShootRight>=shootDelay) {
       this.gameObjectHandler.ui.rReload.alpha = 1;
       if(this.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
-        //this.gameObjectHandler.addSmoke(player, 80);                        --------------------------------------------------------
+        this.gameObjectHandler.addSmoke(player, 80);
         
         this.fire(player, 'right');    
         this.tmrShootRight = 0; 
@@ -215,7 +216,7 @@ class Game extends Phaser.State {
     if(!player.island && player.renderable) this.physics.arcade.velocityFromAngle(player.angle-90, (this.moveSpeed * 2), player.body.velocity);    
     if(!this.posInterval) {
       this.posInterval = setInterval(() => {
-        if(player.renderable) this.client.sendMove(player.x, player.y, player.angle); 
+        if(player.renderable) this.client.sendMove(player.x, player.y, player.angle);            
       }, 50);
     }  
     
@@ -236,7 +237,7 @@ class Game extends Phaser.State {
       this.client.sendFire(gun);
       this.sounds.shoot.play();
     } else {
-      //this.gameObjectHandler.addSmoke(player, gun === 'left' ? -90 : 90);                                        --------------------------------------------------
+      this.gameObjectHandler.addSmoke(player, gun === 'left' ? -80 : 80);                                       
     }
   }
 
@@ -246,7 +247,7 @@ class Game extends Phaser.State {
 
     player.health = health;
     player.tint = this.gameObjectHandler.rgbToHex(player.health);  
-    //this.gameObjectHandler.addSmoke(player, 0, 0);                                                              -------------------------------------------------------
+    this.gameObjectHandler.addSmoke(player, 0, 0);                                                             
     this.gameObjectHandler.addExplosion(player.x, player.y); 
 
     if(player.health===0) {

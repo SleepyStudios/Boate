@@ -13,8 +13,6 @@ class Game {
     }, 10000);
 
     this.chests = [];
-    this.addChest(100, 100);
-
     this.islands = [];
     this.genIslands();
   }

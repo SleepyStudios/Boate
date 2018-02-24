@@ -5,7 +5,7 @@ class GameObjectHandler {
   constructor(game) {
     this.game = game;
     this.players;
-    this.foamEmitters;
+    this.foamEmitters;    
     this.weapons = [];
     this.ui = {};
     this.uiGroup;
@@ -16,7 +16,7 @@ class GameObjectHandler {
 
   create() {
     this.players = this.game.add.group();
-    this.foamEmitters = this.game.add.group();
+    this.foamEmitters = this.game.add.group();    
     this.uiGroup = this.game.add.group();
     this.chests = this.game.add.group();
     this.islands = this.game.add.group();  
@@ -54,11 +54,11 @@ class GameObjectHandler {
     if(data.id===this.game.myID) {
       this.addUI();      
       this.updateGold(player.gold);
-
       this.game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);  
     }
 
     if(this.ui.leaderboard) this.updateLeaderboard();    
+    this.sortLayers();                   
   }
 
   getPlayerChild(group, id) {
@@ -72,25 +72,33 @@ class GameObjectHandler {
   }
 
   addFoamEmitter(player) {
-    let foam = this.game.add.emitter(player.x, player.y, 200);
-    foam.makeParticles('foam');
-    foam.gravity = 0;
-    foam.setXSpeed(0);
-    foam.setScale(0.5, 0.5, 0.5, 0.5);    
-    foam.start(false, 2000, 100);
-    foam.playerID = player.id;
-    this.foamEmitters.add(foam);
+    let foamEmitter = this.game.add.emitter(player.x, player.y, 200);
+    foamEmitter.makeParticles('foam');
+    foamEmitter.gravity = 0;
+    foamEmitter.setXSpeed(0);
+    foamEmitter.setScale(0.5, 0.5, 0.5, 0.5);    
+    // foamEmitter.start(false, 2000, 100);
+    foamEmitter.playerID = player.id;    
+    this.foamEmitters.add(foamEmitter);    
   }
 
   anchorFoamEmitter(player, x, y) {
     this.getPlayerChild(this.foamEmitters.children, player.id).x = x;
-    this.getPlayerChild(this.foamEmitters.children, player.id).y = y;    
+    this.getPlayerChild(this.foamEmitters.children, player.id).y = y-20;    
   }
 
   addSmokeEmitter(player) {
     let smokeEmitter = this.game.add.emitter(0, 0, 100);
     smokeEmitter.makeParticles('smoke');
     player.addChild(smokeEmitter);
+  }
+
+  addSmoke(player, x, delay) {
+    let smoke = player.getChildAt(1);
+    if(!smoke) return;
+
+    smoke.x = x;        
+    // smoke.start(true, 800, null, 20);
   }
 
   addWeapon(player) {
@@ -159,7 +167,7 @@ class GameObjectHandler {
     if(!player) return;
 
     // update foam position
-    this.anchorFoamEmitter(player, x, y);     
+    this.anchorFoamEmitter(player, x, y);  
   
     if(player.renderable) {
       let tween = this.game.add.tween(player);    
@@ -174,16 +182,13 @@ class GameObjectHandler {
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
     player.body.angularVelocity = 0;
-    player.angle = angle;    
+    player.angle = angle;     
   }
 
   removePlayer(id) {
     if(!this.getPlayer(id)) return;
 
-    // destroy their foam emitter
     this.getPlayerChild(this.foamEmitters.children, id).destroy();
-    delete this.getPlayerChild(this.foamEmitters.children, id);
-
     this.getPlayer(id).destroy();    
 
     // destroy their weapon
@@ -251,6 +256,11 @@ class GameObjectHandler {
     if(data.playerID===this.game.myID) {
       this.game.gameObjectHandler.updateGold(player.gold);
       this.game.sounds.coins.play();
+    } else {
+      let me = this.getPlayer(this.game.myID);
+      if(me && me.chest && me.chest.id===data.chest.id) {
+        me.island = null;
+      }
     }
 
     this.chests.children.forEach(chest => {
@@ -270,16 +280,6 @@ class GameObjectHandler {
     island.body.setSize(200, 200, 50, 50);
 
     this.islands.add(island);
-  }
-
-  addSmoke(player, x, delay) {
-    let smoke = player.getChildAt(1);
-    if(!smoke) return;
-
-    setTimeout(() => {
-      smoke.x = x;        
-      smoke.start(true, 800, null, 20);
-    }, delay ? delay : 50);
   }
 
   addExplosion(x, y) {

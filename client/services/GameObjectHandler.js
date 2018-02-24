@@ -212,8 +212,11 @@ class GameObjectHandler {
 
     if(player.id===this.game.myID) {
       player.island = null;      
-      player.renderable = true;
       this.updateGold(player.gold);
+
+      setTimeout(() => {
+        player.renderable = true;
+      }, 1000);
     }
   }
 

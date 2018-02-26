@@ -75,15 +75,16 @@ class GameObjectHandler {
     foamEmitter.makeParticles('foam');
     foamEmitter.gravity = 0;
     foamEmitter.setXSpeed(0);
+    foamEmitter.setYSpeed(0);
     foamEmitter.setScale(0.5, 0.5, 0.5, 0.5);    
-    // foamEmitter.start(false, 2000, 100);
+    foamEmitter.start(false, 2000, 20);
     foamEmitter.playerID = player.id;    
     this.foamEmitters.add(foamEmitter);    
   }
 
   anchorFoamEmitter(player, x, y) {
     this.getGroupChild(this.foamEmitters, player.id).x = x;
-    this.getGroupChild(this.foamEmitters, player.id).y = y-20;    
+    this.getGroupChild(this.foamEmitters, player.id).y = y;       
   }
 
   addSmokeEmitter(player) {
@@ -97,7 +98,7 @@ class GameObjectHandler {
     if(!smoke) return;
 
     smoke.x = x;        
-    // smoke.start(true, 800, null, 20);
+    smoke.start(true, 800, null, 20);
   }
 
   addWeapon(player) {

@@ -77,14 +77,14 @@ class GameObjectHandler {
     foamEmitter.setXSpeed(0);
     foamEmitter.setYSpeed(0);
     foamEmitter.setScale(0.5, 0.5, 0.5, 0.5);    
-    foamEmitter.start(false, 2000, 20);
+    // foamEmitter.start(false, 2000, 20);
     foamEmitter.playerID = player.id;    
     this.foamEmitters.add(foamEmitter);    
   }
 
   anchorFoamEmitter(player, x, y) {
     this.getGroupChild(this.foamEmitters, player.id).x = x;
-    this.getGroupChild(this.foamEmitters, player.id).y = y;       
+    this.getGroupChild(this.foamEmitters, player.id).y = y-20;       
   }
 
   addSmokeEmitter(player) {

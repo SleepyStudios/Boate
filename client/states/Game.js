@@ -56,13 +56,13 @@ class Game extends Phaser.State {
     
     // positioned waves
     let waves = this.add.group();
-    for(let i = 0; i < 15; i++) {
+    for(let i = 0; i < 10; i++) {
       //let randX = Math.floor(Math.random() * worldSize);
       //let randY = Math.floor(Math.random() * worldSize);
-      for(let j = 0; j < 15; j++) {
+      for(let j = 0; j < 10; j++) {
         if (j%2 == 0)
-          waves.create((worldSize/30) + i*(worldSize/15), j*(worldSize/15), 'waves');
-        else waves.create(i*(worldSize/15), j*(worldSize/15), 'waves');
+          waves.create((worldSize/20) + i*(worldSize/10), j*(worldSize/10), 'waves');
+        else waves.create(i*(worldSize/10), j*(worldSize/10), 'waves');
       }
     }
     waves.callAll('animations.add', 'animations', 'waves', [0,1,2,3,4], 7, true);

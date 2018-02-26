@@ -53,6 +53,7 @@ class Menu extends Phaser.State {
     this.button = this.add.button(this.world.centerX+90, this.world.centerY+83, 'button', this.joinGame, this, 1, 0, 2, 0);
 
     // text
+    /*
     let text = this.add.text(this.world.centerX, this.world.centerY+50, "Choose a name!", {
       font: "36px Arial",
       fill: "#fff",
@@ -60,7 +61,7 @@ class Menu extends Phaser.State {
     });
     text.anchor.setTo(0.5, 0.5);
     text.addColor("#000000", 0); 
-
+    */
     // input
     this.name = this.add.inputField(this.world.centerX-(200/2)-(80/2)-10, this.world.centerY+90, {
       font: '18px Arial',

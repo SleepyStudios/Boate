@@ -1,8 +1,6 @@
 class Menu extends Phaser.State {
   constructor() {
     super();
-
-    this.intro = "BOATE"
     this.music;
   }
 
@@ -62,6 +60,7 @@ class Menu extends Phaser.State {
     text.anchor.setTo(0.5, 0.5);
     text.addColor("#000000", 0); 
     */
+   
     // input
     this.name = this.add.inputField(this.world.centerX-(200/2)-(80/2)-10, this.world.centerY+90, {
       font: '18px Arial',

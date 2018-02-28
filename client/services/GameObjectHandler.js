@@ -65,26 +65,34 @@ class GameObjectHandler {
   }
 
   addName(player) {
-    let name = this.game.add.text(0, 110, player.name, { font: "30px Arial", fill: "#ffffff", align: "left" })
+    let name = this.game.add.text(0, 60, player.name, { font: "30px Arial", fill: "#ffffff", align: "left" })
     name.x = name.x - name.width/2
     player.addChild(name)
   }
 
   addFoamEmitter(player) {
-    let foamEmitter = this.game.add.emitter(player.x, player.y, 200)
+    let foamEmitter = this.game.add.emitter(player.x, player.y, 100)
     foamEmitter.makeParticles('foam')
     foamEmitter.gravity = 0
     foamEmitter.setXSpeed(0)
     foamEmitter.setYSpeed(0)
-    foamEmitter.setScale(0.5, 0.5, 0.5, 0.5)    
-    // foamEmitter.start(false, 2000, 20)
-    foamEmitter.playerID = player.id    
+    foamEmitter.setScale(.9, 1, .9, 1)    
+    foamEmitter.start(false, 1000, 150)
+    foamEmitter.playerID = player.id  
     this.foamEmitters.add(foamEmitter)    
   }
 
   anchorFoamEmitter(player, x, y) {
-    this.getGroupChild(this.foamEmitters, player.id).x = x
-    this.getGroupChild(this.foamEmitters, player.id).y = y-20       
+    let foam = this.getGroupChild(this.foamEmitters, player.id)
+    foam.x = x
+    foam.y = y 
+    foam.setXSpeed(-player.body.velocity.x, player.body.velocity.x)
+    foam.setYSpeed(-player.body.velocity.y, player.body.velocity.y)   
+    
+    let px = player.body.velocity.x*-1
+    let py = player.body.velocity.y*-1
+    foam.minParticleSpeed.set(px, py)
+    foam.maxParticleSpeed.set(px, py)
   }
 
   addSmokeEmitter(player) {

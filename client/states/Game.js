@@ -84,7 +84,7 @@ class Game extends Phaser.State {
       let foam = this.gameObjectHandler.getGroupChild(this.gameObjectHandler.foamEmitters, player.id)   
       if(foam) {                         
         foam.forEachAlive(p => {
-          // p.alpha = p.lifespan / foam.lifespan	
+          p.alpha = p.lifespan / foam.lifespan	
         })
       }
 
